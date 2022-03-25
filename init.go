@@ -3,7 +3,8 @@ package urlgit
 import (
 	"fmt"
 	"net/url"
-	githubparserv1 "urlgit/githubparser/v1"
+
+	githubparserv1 "github.com/armosec/url-git-go/githubparser/v1"
 )
 
 // NewGitURL get instance of git parser

@@ -4,7 +4,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
-	"urlgit/apis"
+
+	"github.com/armosec/url-git-go/apis"
 )
 
 func APIRepoTree(owner, repo, branch string) string {

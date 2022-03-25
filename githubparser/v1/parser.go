@@ -6,7 +6,8 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
-	"urlgit/apis/githubapi"
+
+	"github.com/armosec/url-git-go/apis/githubapi"
 
 	"k8s.io/utils/strings/slices"
 )
