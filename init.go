@@ -1,4 +1,4 @@
-package main
+package giturl
 
 import (
 	"fmt"
