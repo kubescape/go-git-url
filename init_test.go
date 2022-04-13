@@ -7,13 +7,14 @@ import (
 )
 
 func TestNewGitURL(t *testing.T) {
+	fileText := "https://raw.githubusercontent.com/armosec/go-git-url/master/files/file0.text"
 	{
 		gitURL, err := NewGitURL("https://github.com/armosec/go-git-url")
 		assert.NoError(t, err)
 
 		files, err := gitURL.ListFilesNamesWithExtension([]string{"yaml", "json"})
 		assert.NoError(t, err)
-		assert.Equal(t, 6, len(files))
+		assert.Equal(t, 7, len(files))
 	}
 
 	{
@@ -23,28 +24,28 @@ func TestNewGitURL(t *testing.T) {
 		files, errM := gitURL.DownloadFilesWithExtension([]string{"text"})
 		assert.Equal(t, 0, len(errM))
 		assert.Equal(t, 1, len(files))
-		assert.Equal(t, "name=file0", string(files["https://raw.githubusercontent.com/armosec/url-git-go/master/files/file0.text"]))
+		assert.Equal(t, "name=file0", string(files[fileText]))
 
 	}
 
 	{
-		gitURL, err := NewGitURL("https://raw.githubusercontent.com/armosec/url-git-go/master/files/file0.text")
+		gitURL, err := NewGitURL(fileText)
 		assert.NoError(t, err)
 
 		files, errM := gitURL.DownloadFilesWithExtension([]string{"text"})
 		assert.Equal(t, 0, len(errM))
 		assert.Equal(t, 1, len(files))
-		assert.Equal(t, "name=file0", string(files["https://raw.githubusercontent.com/armosec/url-git-go/master/files/file0.text"]))
+		assert.Equal(t, "name=file0", string(files[fileText]))
 	}
 
 	{
-		gitURL, err := NewGitURL("https://raw.githubusercontent.com/armosec/url-git-go/master/files/file0.text")
+		gitURL, err := NewGitURL(fileText)
 		assert.NoError(t, err)
 
 		files, errM := gitURL.DownloadAllFiles()
 		assert.Equal(t, 0, len(errM))
 		assert.Equal(t, 1, len(files))
-		assert.Equal(t, "name=file0", string(files["https://raw.githubusercontent.com/armosec/url-git-go/master/files/file0.text"]))
+		assert.Equal(t, "name=file0", string(files[fileText]))
 	}
 
 	{
@@ -54,7 +55,7 @@ func TestNewGitURL(t *testing.T) {
 		files, errM := gitURL.DownloadFilesWithExtension([]string{"text"})
 		assert.Equal(t, 0, len(errM))
 		assert.Equal(t, 1, len(files))
-		assert.Equal(t, "name=file0", string(files["https://raw.githubusercontent.com/armosec/url-git-go/master/files/file0.text"]))
+		assert.Equal(t, "name=file0", string(files[fileText]))
 
 	}
 
@@ -65,7 +66,7 @@ func TestNewGitURL(t *testing.T) {
 		files, errM := gitURL.DownloadFilesWithExtension([]string{"text"})
 		assert.Equal(t, 0, len(errM))
 		assert.Equal(t, 1, len(files))
-		assert.Equal(t, "name=file0", string(files["https://raw.githubusercontent.com/armosec/url-git-go/master/files/file0.text"]))
+		assert.Equal(t, "name=file0", string(files[fileText]))
 
 	}
 }

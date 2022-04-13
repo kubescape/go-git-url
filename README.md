@@ -28,10 +28,10 @@ func main() {
 
 	fmt.Printf(gitURL.GetHost())  // github.com
 	fmt.Printf(gitURL.GetOwner()) // armosec
-	fmt.Printf(gitURL.GetRepo())  // url-git-go
+	fmt.Printf(gitURL.GetRepo())  // go-git-url
 }
 ```
-
+ 
 ## Git API support
 
 > It is recommended to use a [github token](https://docs.github.com/en/enterprise-server@3.4/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token). Set the github token in the `GITHUB_TOKEN` env
@@ -39,29 +39,41 @@ func main() {
 ### List files and directories
 ```go
 
-	// List all files and directories names
-	all, err := gitURL.ListAllNames()
+// List all files and directories names
+all, err := gitURL.ListAllNames()
 
-	// List all files names
-	files, err := gitURL.ListFilesNames()
+// List all files names
+files, err := gitURL.ListFilesNames()
 
-	// List all directories names
-	dirs, err := gitURL.ListDirsNames()
+// List all directories names
+dirs, err := gitURL.ListDirsNames()
 
-	// List files names with the listed extensions
-	extensions := []string{"yaml", "json"}
-	files, err := gitURL.ListFilesNamesWithExtension(extensions)
+// List files names with the listed extensions
+extensions := []string{"yaml", "json"}
+files, err := gitURL.ListFilesNamesWithExtension(extensions)
 
 ```		
 
+Different URL support ->
+```go
+ 
+basicURL, err := giturl.NewGitURL("https://github.com/armosec/go-git-url") 
+ 
+nestedURL, err := giturl.NewGitURL("https://github.com/armosec/go-git-url/tree/master/files")  
+
+fileApiURL, err := giturl.NewGitURL("https://github.com/armosec/go-git-url/blob/master/files/file0.json")  
+
+fileRawURL, err := giturl.NewGitURL("https://raw.githubusercontent.com/armosec/go-git-url/master/files/file0.json") 
+
+```
 ### Download files
 ```go
 
-	// Download all files
-	all, err := gitURL.DownloadAllFiles()
+// Download all files
+all, err := gitURL.DownloadAllFiles()
 
-	// Download all files with the listed extensions
-	extensions := []string{"yaml", "json"}
-	files, err := gitURL.DownloadFilesWithExtension(extensions)
+// Download all files with the listed extensions
+extensions := []string{"yaml", "json"}
+files, err := gitURL.DownloadFilesWithExtension(extensions)
 
 ```	 
