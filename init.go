@@ -1,9 +1,10 @@
-package urlgit
+package main
 
 import (
 	"fmt"
 	"net/url"
 
+	"github.com/armosec/url-git-go/apis/githubapi"
 	githubparserv1 "github.com/armosec/url-git-go/githubparser/v1"
 )
 
@@ -15,7 +16,7 @@ func NewGitURL(fullURL string) (IGitURL, error) {
 	}
 
 	switch hostUrl {
-	case "github.com", "raw.githubusercontent.com":
+	case githubapi.DEFAULT_HOST, githubapi.RAW_HOST:
 		return githubparserv1.NewGitHubParserWithURL(fullURL)
 	default:
 		return nil, fmt.Errorf("repository host '%s' not supported", hostUrl)

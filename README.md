@@ -29,17 +29,37 @@ func main() {
 	fmt.Printf(gitURL.GetRepo())  // url-git-go
 
 	{ // list only json and yaml files
-		files, err := gitURL.ListFiles([]string{"yaml", "json"})
+		files, err := gitURL.ListFilesNamesWithExtension([]string{"yaml", "json"})
 		if err != nil {
 			fmt.Print(err)
 			return
 		}
 
-		fmt.Printf(len(files)) // 5
+		fmt.Printf(len(files)) // 6
 	}
 
 	{ // list all files
-		files, err := gitURL.ListFiles([]string{})
+		files, err := gitURL.ListAllNames()
+		if err != nil {
+			fmt.Print(err)
+			return
+		}
+
+		fmt.Printf(len(files))
+	}
+
+	{ // download json files
+		files, err := gitURL.DownloadFilesWithExtension([]string{"yaml", "json"})
+		if err != nil {
+			fmt.Print(err)
+			return
+		}
+
+		fmt.Printf(len(files)) // 6
+	}
+
+	{ // // download all files
+		files, err := gitURL.DownloadAllFiles()
 		if err != nil {
 			fmt.Print(err)
 			return

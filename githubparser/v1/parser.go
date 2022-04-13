@@ -4,19 +4,18 @@ import (
 	"fmt"
 	"net/url"
 	"os"
-	"path/filepath"
 	"strings"
 
 	"github.com/armosec/url-git-go/apis/githubapi"
-
-	"k8s.io/utils/strings/slices"
 )
 
 // NewGitHubParser empty instance of a github parser
 func NewGitHubParser() *GitHubURL {
+
 	return &GitHubURL{
-		host:  "github.com",
-		token: os.Getenv("GITHUB_TOKEN"),
+		gitHubAPI: githubapi.NewGitHubAPI(),
+		host:      githubapi.DEFAULT_HOST,
+		token:     os.Getenv("GITHUB_TOKEN"),
 	}
 }
 
@@ -29,6 +28,14 @@ func NewGitHubParserWithURL(fullURL string) (*GitHubURL, error) {
 	}
 
 	return gh, nil
+}
+
+func (gh *GitHubURL) GetURL() *url.URL {
+	return &url.URL{
+		Scheme: "https",
+		Host:   gh.host,
+		Path:   fmt.Sprintf("%s/%s", gh.GetOwner(), gh.GetRepo()),
+	}
 }
 
 func (gh *GitHubURL) GetHost() string   { return gh.host }
@@ -51,7 +58,7 @@ func (gh *GitHubURL) Parse(fullURL string) error {
 		return err
 	}
 
-	if parsedURL.Host == "raw.githubusercontent.com" {
+	if parsedURL.Host == githubapi.RAW_HOST {
 		gh.isFile = true
 	}
 
@@ -98,7 +105,7 @@ func (gh *GitHubURL) Parse(fullURL string) error {
 
 // Set the default brach of the repo
 func (gh *GitHubURL) SetDefaultBranch() error {
-	branch, err := githubapi.GetDefaultBranchName(gh.GetOwner(), gh.GetRepo(), gh.headres())
+	branch, err := gh.gitHubAPI.GetDefaultBranchName(gh.GetOwner(), gh.GetRepo(), gh.headres())
 	if err != nil {
 		return err
 	}
@@ -106,49 +113,6 @@ func (gh *GitHubURL) SetDefaultBranch() error {
 	return nil
 }
 
-func (gh *GitHubURL) ListFiles(filesExtensions []string) ([]string, error) {
-	if gh.GetHost() == "" || gh.GetOwner() == "" || gh.GetRepo() == "" {
-		return []string{}, fmt.Errorf("missing host/owner/repo")
-	}
-	if gh.GetBranch() == "" {
-		if err := gh.SetDefaultBranch(); err != nil {
-			return []string{}, fmt.Errorf("failed to get default branch. reason: %s", err.Error())
-		}
-	}
-
-	// if the URL points directly to a file
-	if gh.isFile {
-		if slices.Contains(filesExtensions, getFileExtension(gh.GetPath())) {
-			return []string{githubapi.APIRaw(gh.GetOwner(), gh.GetRepo(), gh.GetBranch(), gh.GetPath())}, nil
-		} else {
-			return []string{}, nil
-		}
-	}
-
-	repoTree, err := githubapi.GetRepoTree(gh.GetOwner(), gh.GetRepo(), gh.GetBranch(), gh.headres())
-	if err != nil {
-		return []string{}, fmt.Errorf("failed to get repo tree. reason: %s", err.Error())
-	}
-
-	var files []string
-	for _, path := range repoTree.ListAll() {
-		if gh.path != "" && !strings.HasPrefix(path, gh.GetPath()) {
-			continue
-		}
-		if len(filesExtensions) > 0 {
-			if slices.Contains(filesExtensions, getFileExtension(path)) {
-				files = append(files, githubapi.APIRaw(gh.GetOwner(), gh.GetRepo(), gh.GetBranch(), gh.GetPath()))
-			}
-		} else {
-			files = append(files, githubapi.APIRaw(gh.GetOwner(), gh.GetRepo(), gh.GetBranch(), gh.GetPath()))
-		}
-	}
-	return files, nil
-}
-
-func getFileExtension(path string) string {
-	return strings.TrimPrefix(filepath.Ext(path), ".")
-}
 func (gh *GitHubURL) headres() *githubapi.Headres {
 	return &githubapi.Headres{Token: gh.GetToken()}
 }

@@ -1,5 +1,7 @@
 package v1
 
+import "github.com/armosec/url-git-go/apis/githubapi"
+
 type GitHubURL struct {
 	host   string // default is github
 	owner  string // repo owner
@@ -8,4 +10,6 @@ type GitHubURL struct {
 	path   string
 	token  string // github token
 	isFile bool   // is the URL is pointing to a file or not
+
+	gitHubAPI githubapi.IGitHubAPI
 }

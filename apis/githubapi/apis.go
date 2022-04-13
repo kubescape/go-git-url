@@ -8,20 +8,24 @@ import (
 	"github.com/armosec/url-git-go/apis"
 )
 
-func APIRepoTree(owner, repo, branch string) string {
-	return fmt.Sprintf("https://api.github.com/repos/%s/%s/git/trees/%s?recursive=1", owner, repo, branch)
+const (
+	DEFAULT_HOST string = "github.com"
+	RAW_HOST     string = "raw.githubusercontent.com"
+)
+
+type IGitHubAPI interface {
+	GetRepoTree(owner, repo, branch string, headres *Headres) (*Tree, error)
+	GetDefaultBranchName(owner, repo string, headres *Headres) (string, error)
+}
+type GitHubAPI struct {
+	httpClient *http.Client
 }
 
-func APIRaw(owner, repo, branch, path string) string {
-	return fmt.Sprintf("https://raw.githubusercontent.com/%s/%s/%s/%s", owner, repo, branch, path)
-}
-func APIDefaultBranch(owner, repo string) string {
-	return fmt.Sprintf("https://api.github.com/repos/%s/%s", owner, repo)
-}
+func NewGitHubAPI() *GitHubAPI { return &GitHubAPI{httpClient: &http.Client{}} }
 
-func GetRepoTree(owner, repo, branch string, headres *Headres) (*Tree, error) {
+func (gh *GitHubAPI) GetRepoTree(owner, repo, branch string, headres *Headres) (*Tree, error) {
 	treeAPI := APIRepoTree(owner, repo, branch)
-	body, err := apis.HttpGet(&http.Client{}, treeAPI, headres.ToMap())
+	body, err := apis.HttpGet(gh.httpClient, treeAPI, headres.ToMap())
 	if err != nil {
 		return nil, err
 	}
@@ -30,15 +34,14 @@ func GetRepoTree(owner, repo, branch string, headres *Headres) (*Tree, error) {
 	err = json.Unmarshal([]byte(body), &tree)
 	if err != nil {
 		return nil, fmt.Errorf("failed to unmarshal response body from '%s', reason: %s", treeAPI, err.Error())
-		// return nil
 	}
 	return &tree, nil
 
 }
 
-func GetDefaultBranchName(owner, repo string, headres *Headres) (string, error) {
+func (gh *GitHubAPI) GetDefaultBranchName(owner, repo string, headres *Headres) (string, error) {
 
-	body, err := apis.HttpGet(&http.Client{}, APIDefaultBranch(owner, repo), headres.ToMap())
+	body, err := apis.HttpGet(gh.httpClient, APIDefaultBranch(owner, repo), headres.ToMap())
 	if err != nil {
 		return "", err
 	}
@@ -49,4 +52,15 @@ func GetDefaultBranchName(owner, repo string, headres *Headres) (string, error) 
 		return "", err
 	}
 	return data.DefaultBranch, nil
+}
+
+func APIRepoTree(owner, repo, branch string) string {
+	return fmt.Sprintf("https://api.%s/repos/%s/%s/git/trees/%s?recursive=1", DEFAULT_HOST, owner, repo, branch)
+}
+
+func APIRaw(owner, repo, branch, path string) string {
+	return fmt.Sprintf("https://%s/%s/%s/%s/%s", RAW_HOST, owner, repo, branch, path)
+}
+func APIDefaultBranch(owner, repo string) string {
+	return fmt.Sprintf("https://api.%s/repos/%s/%s", DEFAULT_HOST, owner, repo)
 }
