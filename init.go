@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"net/url"
 
-	"github.com/armosec/url-git-go/apis/githubapi"
-	githubparserv1 "github.com/armosec/url-git-go/githubparser/v1"
+	"github.com/armosec/go-git-url/apis/githubapi"
+	githubparserv1 "github.com/armosec/go-git-url/githubparser/v1"
 )
 
 // NewGitURL get instance of git parser

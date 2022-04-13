@@ -6,7 +6,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/armosec/url-git-go/apis/githubapi"
+	"github.com/armosec/go-git-url/apis/githubapi"
 )
 
 // NewGitHubParser empty instance of a github parser

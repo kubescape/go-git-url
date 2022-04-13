@@ -9,9 +9,9 @@ import (
 )
 
 var (
-	urlA = "https://github.com/armosec/url-git-go"
-	urlB = "https://github.com/armosec/url-git-go/blob/master/files/file0.json"
-	urlC = "https://github.com/armosec/url-git-go/tree/master/files"
+	urlA = "https://github.com/armosec/go-git-url"
+	urlB = "https://github.com/armosec/go-git-url/blob/master/files/file0.json"
+	urlC = "https://github.com/armosec/go-git-url/tree/master/files"
 	urlD = "https://raw.githubusercontent.com/armosec/url-git-go/master/files/file0.json"
 )
 

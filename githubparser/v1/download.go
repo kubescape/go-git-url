@@ -6,7 +6,7 @@ import (
 	"io"
 	"net/http"
 
-	"github.com/armosec/url-git-go/apis/githubapi"
+	"github.com/armosec/go-git-url/apis/githubapi"
 )
 
 // DownloadAllFiles download files from git repo tree

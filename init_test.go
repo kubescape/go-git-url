@@ -8,7 +8,7 @@ import (
 
 func TestNewGitURL(t *testing.T) {
 	{
-		gitURL, err := NewGitURL("https://github.com/armosec/url-git-go")
+		gitURL, err := NewGitURL("https://github.com/armosec/go-git-url")
 		assert.NoError(t, err)
 
 		files, err := gitURL.ListFilesNamesWithExtension([]string{"yaml", "json"})
@@ -17,7 +17,7 @@ func TestNewGitURL(t *testing.T) {
 	}
 
 	{
-		gitURL, err := NewGitURL("https://github.com/armosec/url-git-go")
+		gitURL, err := NewGitURL("https://github.com/armosec/go-git-url")
 		assert.NoError(t, err)
 
 		files, errM := gitURL.DownloadFilesWithExtension([]string{"text"})
@@ -48,7 +48,7 @@ func TestNewGitURL(t *testing.T) {
 	}
 
 	{
-		gitURL, err := NewGitURL("https://github.com/armosec/url-git-go/tree/master/files")
+		gitURL, err := NewGitURL("https://github.com/armosec/go-git-url/tree/master/files")
 		assert.NoError(t, err)
 
 		files, errM := gitURL.DownloadFilesWithExtension([]string{"text"})
@@ -59,7 +59,7 @@ func TestNewGitURL(t *testing.T) {
 	}
 
 	{
-		gitURL, err := NewGitURL("https://github.com/armosec/url-git-go/blob/master/files/file0.text")
+		gitURL, err := NewGitURL("https://github.com/armosec/go-git-url/blob/master/files/file0.text")
 		assert.NoError(t, err)
 
 		files, errM := gitURL.DownloadFilesWithExtension([]string{"text"})
