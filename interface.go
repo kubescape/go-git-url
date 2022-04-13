@@ -4,19 +4,23 @@ import "net/url"
 
 // IGitURL parse git urls
 type IGitURL interface {
-
-	// parse url
-	Parse(fullURL string) error
-
 	SetBranch(string)
 	SetOwner(string)
 	SetPath(string)
 	SetToken(string)
+	SetRepo(string)
 
 	GetBranch() string
 	GetOwner() string
 	GetPath() string
 	GetToken() string
+	GetRepo() string
+
+	// parse url
+	Parse(fullURL string) error
+
+	// set default branch from the API
+	SetDefaultBranch() error
 
 	// GetURL git url
 	GetURL() *url.URL
