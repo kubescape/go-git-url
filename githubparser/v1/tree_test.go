@@ -36,17 +36,6 @@ func TestListAllNames(t *testing.T) {
 	}
 }
 
-func TestGetLastCommit(t *testing.T) {
-	{
-		gh, err := NewGitHubParserWithURLMock(urlA)
-		assert.NoError(t, err)
-		commit, err := gh.gitHubAPI.GetLatestCommit(gh.GetOwnerName(), gh.GetRepoName(), "master", &githubapi.Headers{})
-		assert.NoError(t, err)
-		assert.Equal(t, "e7d287e491b4002bc59d67ad7423d8119fc89e6c", commit.SHA)
-		assert.Equal(t, "David Wertenteil", commit.Commit.Committer.Name)
-		assert.Equal(t, "dwertent@armosec.io", commit.Commit.Committer.Email)
-	}
-}
 func TestGetFileExtension(t *testing.T) {
 	assert.Equal(t, "yaml", getFileExtension("my/name.yaml"))
 	assert.Equal(t, "txt", getFileExtension("/my/name.txt"))

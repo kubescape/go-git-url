@@ -1,6 +1,10 @@
 package giturl
 
-import "net/url"
+import (
+	"net/url"
+
+	"github.com/armosec/go-git-url/apis"
+)
 
 // IGitURL parse git urls
 type IGitURL interface {
@@ -45,4 +49,7 @@ type IGitURL interface {
 	// DownloadFilesWithExtension download files from git repo tree based on file extension
 	// return map of (url:file, url:error)
 	DownloadFilesWithExtension(extensions []string) (map[string][]byte, map[string]error)
+
+	// GetLatestCommit get latest commit
+	GetLatestCommit() (*apis.Commit, error)
 }
