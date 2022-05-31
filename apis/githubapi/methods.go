@@ -33,8 +33,8 @@ func (t *Tree) ListAllDirs() []string {
 	return l
 }
 
-// ToMap convert headser to map[string]string
-func (h *Headres) ToMap() map[string]string {
+// ToMap convert headers to map[string]string
+func (h *Headers) ToMap() map[string]string {
 	m := make(map[string]string)
 	if h.Token != "" {
 		m["Authorization"] = fmt.Sprintf("token %s", h.Token)

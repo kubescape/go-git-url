@@ -21,16 +21,16 @@ func (gh *GitHubURL) GetTree() (*githubapi.Tree, error) {
 			},
 		}, nil
 	}
-	if gh.GetHost() == "" || gh.GetOwner() == "" || gh.GetRepo() == "" {
+	if gh.GetHostName() == "" || gh.GetOwnerName() == "" || gh.GetRepoName() == "" {
 		return nil, fmt.Errorf("missing host/owner/repo")
 	}
-	if gh.GetBranch() == "" {
-		if err := gh.SetDefaultBranch(); err != nil {
+	if gh.GetBranchName() == "" {
+		if err := gh.SetDefaultBranchName(); err != nil {
 			return nil, fmt.Errorf("failed to get default branch. reason: %s", err.Error())
 		}
 	}
 
-	repoTree, err := gh.gitHubAPI.GetRepoTree(gh.GetOwner(), gh.GetRepo(), gh.GetBranch(), gh.headres())
+	repoTree, err := gh.gitHubAPI.GetRepoTree(gh.GetOwnerName(), gh.GetRepoName(), gh.GetBranchName(), gh.headers())
 	if err != nil {
 		return repoTree, fmt.Errorf("failed to get repo tree. reason: %s", err.Error())
 	}
@@ -67,7 +67,7 @@ func (gh *GitHubURL) ListFilesNames() ([]string, error) {
 	return repoTree.ListAllFiles(), nil
 }
 
-// ListFilesNamesWithExtention list all files in path with the desired extension
+// ListFilesNamesWithExtension list all files in path with the desired extension
 func (gh *GitHubURL) ListFilesNamesWithExtension(filesExtensions []string) ([]string, error) {
 
 	fileNames, err := gh.ListFilesNames()

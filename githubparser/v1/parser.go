@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	"github.com/armosec/go-git-url/apis/githubapi"
+	giturl "github.com/whilp/git-urls"
 )
 
 // NewGitHubParser empty instance of a github parser
@@ -34,26 +35,27 @@ func (gh *GitHubURL) GetURL() *url.URL {
 	return &url.URL{
 		Scheme: "https",
 		Host:   gh.host,
-		Path:   fmt.Sprintf("%s/%s", gh.GetOwner(), gh.GetRepo()),
+		Path:   fmt.Sprintf("%s/%s", gh.GetOwnerName(), gh.GetRepoName()),
 	}
 }
 
-func (gh *GitHubURL) GetHost() string   { return gh.host }
-func (gh *GitHubURL) GetBranch() string { return gh.branch }
-func (gh *GitHubURL) GetOwner() string  { return gh.owner }
-func (gh *GitHubURL) GetRepo() string   { return gh.repo }
-func (gh *GitHubURL) GetPath() string   { return gh.path }
-func (gh *GitHubURL) GetToken() string  { return gh.token }
+func (gh *GitHubURL) GetProvider() string   { return "github" }
+func (gh *GitHubURL) GetHostName() string   { return gh.host }
+func (gh *GitHubURL) GetBranchName() string { return gh.branch }
+func (gh *GitHubURL) GetOwnerName() string  { return gh.owner }
+func (gh *GitHubURL) GetRepoName() string   { return gh.repo }
+func (gh *GitHubURL) GetPath() string       { return gh.path }
+func (gh *GitHubURL) GetToken() string      { return gh.token }
 
-func (gh *GitHubURL) SetOwner(o string)       { gh.owner = o }
-func (gh *GitHubURL) SetRepo(r string)        { gh.repo = r }
-func (gh *GitHubURL) SetPath(p string)        { gh.path = p }
-func (gh *GitHubURL) SetBranch(branch string) { gh.branch = branch }
-func (gh *GitHubURL) SetToken(token string)   { gh.token = token }
+func (gh *GitHubURL) SetOwnerName(o string)       { gh.owner = o }
+func (gh *GitHubURL) SetRepoName(r string)        { gh.repo = r }
+func (gh *GitHubURL) SetBranchName(branch string) { gh.branch = branch }
+func (gh *GitHubURL) SetPath(p string)            { gh.path = p }
+func (gh *GitHubURL) SetToken(token string)       { gh.token = token }
 
 // Parse URL
 func (gh *GitHubURL) Parse(fullURL string) error {
-	parsedURL, err := url.Parse(fullURL)
+	parsedURL, err := giturl.Parse(fullURL)
 	if err != nil {
 		return err
 	}
@@ -70,7 +72,7 @@ func (gh *GitHubURL) Parse(fullURL string) error {
 	}
 	gh.owner = splittedRepo[index]
 	index += 1
-	gh.repo = splittedRepo[index]
+	gh.repo = strings.TrimSuffix(splittedRepo[index], ".git")
 	index += 1
 
 	// root of repo
@@ -104,8 +106,8 @@ func (gh *GitHubURL) Parse(fullURL string) error {
 }
 
 // Set the default brach of the repo
-func (gh *GitHubURL) SetDefaultBranch() error {
-	branch, err := gh.gitHubAPI.GetDefaultBranchName(gh.GetOwner(), gh.GetRepo(), gh.headres())
+func (gh *GitHubURL) SetDefaultBranchName() error {
+	branch, err := gh.gitHubAPI.GetDefaultBranchName(gh.GetOwnerName(), gh.GetRepoName(), gh.headers())
 	if err != nil {
 		return err
 	}
@@ -113,6 +115,6 @@ func (gh *GitHubURL) SetDefaultBranch() error {
 	return nil
 }
 
-func (gh *GitHubURL) headres() *githubapi.Headres {
-	return &githubapi.Headres{Token: gh.GetToken()}
+func (gh *GitHubURL) headers() *githubapi.Headers {
+	return &githubapi.Headers{Token: gh.GetToken()}
 }

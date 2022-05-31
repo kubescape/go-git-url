@@ -74,7 +74,7 @@ func streamToByte(stream io.Reader) ([]byte, error) {
 func (gh *GitHubURL) pathsToURLs(files []string) []string {
 	var rawURLs []string
 	for i := range files {
-		rawURLs = append(rawURLs, githubapi.APIRaw(gh.GetOwner(), gh.GetRepo(), gh.GetBranch(), files[i]))
+		rawURLs = append(rawURLs, githubapi.APIRaw(gh.GetOwnerName(), gh.GetRepoName(), gh.GetBranchName(), files[i]))
 	}
 	return rawURLs
 }

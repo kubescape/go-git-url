@@ -4,29 +4,30 @@ import "net/url"
 
 // IGitURL parse git urls
 type IGitURL interface {
-	SetBranch(string)
-	SetOwner(string)
+	SetBranchName(string)
+	SetOwnerName(string)
 	SetPath(string)
 	SetToken(string)
-	SetRepo(string)
+	SetRepoName(string)
 
-	GetBranch() string
-	GetOwner() string
+	GetProvider() string
+	GetBranchName() string
+	GetOwnerName() string
 	GetPath() string
 	GetToken() string
-	GetRepo() string
+	GetRepoName() string
 
 	// parse url
 	Parse(fullURL string) error
 
-	// set default branch from the API
-	SetDefaultBranch() error
+	// set default branch name using the providers git API
+	SetDefaultBranchName() error
 
 	// GetURL git url
 	GetURL() *url.URL
 
 	// ListFilesNamesWithExtension list all files in path with the desired extension. if empty will list all (including directories)
-	ListFilesNamesWithExtension(exctensions []string) ([]string, error)
+	ListFilesNamesWithExtension(extensions []string) ([]string, error)
 
 	// ListAll list all directories and files in url tree
 	ListAllNames() ([]string, error)
@@ -43,5 +44,5 @@ type IGitURL interface {
 
 	// DownloadFilesWithExtension download files from git repo tree based on file extension
 	// return map of (url:file, url:error)
-	DownloadFilesWithExtension(exctensions []string) (map[string][]byte, map[string]error)
+	DownloadFilesWithExtension(extensions []string) (map[string][]byte, map[string]error)
 }

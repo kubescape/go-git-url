@@ -4,6 +4,7 @@ go 1.17
 
 require (
 	github.com/stretchr/testify v1.3.0
+	github.com/whilp/git-urls v1.0.0
 	k8s.io/utils v0.0.0-20220210201930-3a6ce19ff2f9
 )
 

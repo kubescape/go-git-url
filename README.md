@@ -26,9 +26,9 @@ func main() {
 		// do something
 	}
 
-	fmt.Printf(gitURL.GetHost())  // github.com
-	fmt.Printf(gitURL.GetOwner()) // armosec
-	fmt.Printf(gitURL.GetRepo())  // go-git-url
+	fmt.Printf(gitURL.GetHostName())  // github.com
+	fmt.Printf(gitURL.GetOwnerName()) // armosec
+	fmt.Printf(gitURL.GetRepoName())  // go-git-url
 }
 ```
  
