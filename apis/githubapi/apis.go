@@ -33,7 +33,6 @@ func (gh *GitHubAPI) GetRepoTree(owner, repo, branch string, headers *Headers) (
 		return nil, err
 	}
 
-	fmt.Printf("%s\n", []byte(body))
 	var tree Tree
 	if err = json.Unmarshal([]byte(body), &tree); err != nil {
 		return nil, fmt.Errorf("failed to unmarshal response body from '%s', reason: %s", treeAPI, err.Error())
