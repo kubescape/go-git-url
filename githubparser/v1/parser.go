@@ -38,6 +38,9 @@ func (gh *GitHubURL) GetURL() *url.URL {
 		Path:   fmt.Sprintf("%s/%s", gh.GetOwnerName(), gh.GetRepoName()),
 	}
 }
+func IsHostGitHub(host string) bool {
+	return host == githubapi.DEFAULT_HOST || host == githubapi.RAW_HOST
+}
 
 func (gh *GitHubURL) GetProvider() string   { return "github" }
 func (gh *GitHubURL) GetHostName() string   { return gh.host }
@@ -66,7 +69,7 @@ func (gh *GitHubURL) Parse(fullURL string) error {
 
 	index := 0
 
-	splittedRepo := strings.FieldsFunc(parsedURL.Path, func(c rune) bool { return c == '/' })
+	splittedRepo := strings.FieldsFunc(parsedURL.Path, func(c rune) bool { return c == '/' }) // trim empty fields from returned slice
 	if len(splittedRepo) < 2 {
 		return fmt.Errorf("expecting <user>/<repo> in url path, received: '%s'", parsedURL.Path)
 	}

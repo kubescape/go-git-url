@@ -11,24 +11,27 @@ type IGitURL interface {
 	SetBranchName(string)
 	SetOwnerName(string)
 	SetPath(string)
-	SetToken(string)
 	SetRepoName(string)
 
 	GetProvider() string
 	GetBranchName() string
 	GetOwnerName() string
 	GetPath() string
-	GetToken() string
 	GetRepoName() string
 
 	// parse url
 	Parse(fullURL string) error
 
-	// set default branch name using the providers git API
-	SetDefaultBranchName() error
-
 	// GetURL git url
 	GetURL() *url.URL
+}
+
+type IGitAPI interface {
+	GetToken() string
+	SetToken(string)
+
+	// set default branch name using the providers git API
+	SetDefaultBranchName() error
 
 	// ListFilesNamesWithExtension list all files in path with the desired extension. if empty will list all (including directories)
 	ListFilesNamesWithExtension(extensions []string) ([]string, error)

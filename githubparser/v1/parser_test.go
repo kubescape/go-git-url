@@ -20,6 +20,7 @@ func TestNewGitHubParserWithURL(t *testing.T) {
 		gh, err := NewGitHubParserWithURL(urlA)
 		assert.NoError(t, err)
 		assert.Equal(t, "github.com", gh.GetHostName())
+		assert.Equal(t, "github", gh.GetProvider())
 		assert.Equal(t, "armosec", gh.GetOwnerName())
 		assert.Equal(t, "go-git-url", gh.GetRepoName())
 		assert.Equal(t, urlA, gh.GetURL().String())
