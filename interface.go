@@ -27,6 +27,8 @@ type IGitURL interface {
 }
 
 type IGitAPI interface {
+	IGitURL
+
 	GetToken() string
 	SetToken(string)
 
