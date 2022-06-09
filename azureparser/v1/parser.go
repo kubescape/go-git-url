@@ -51,6 +51,9 @@ func (az *AzureURL) GetOwnerName() string   { return az.owner }
 func (az *AzureURL) GetRepoName() string    { return az.repo }
 func (az *AzureURL) GetPath() string        { return az.path }
 func (az *AzureURL) GetToken() string       { return az.token }
+func (gh *AzureURL) GetHttpCloneURL() string {
+	return gh.GetURL().String()
+}
 
 func (az *AzureURL) SetOwnerName(o string)         { az.owner = o }
 func (az *AzureURL) SetProjectName(project string) { az.project = project }
