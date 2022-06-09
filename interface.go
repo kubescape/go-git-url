@@ -18,6 +18,7 @@ type IGitURL interface {
 	GetOwnerName() string
 	GetPath() string
 	GetRepoName() string
+	GetHttpCloneURL() string
 
 	// parse url
 	Parse(fullURL string) error

@@ -49,6 +49,9 @@ func (gh *GitHubURL) GetOwnerName() string  { return gh.owner }
 func (gh *GitHubURL) GetRepoName() string   { return gh.repo }
 func (gh *GitHubURL) GetPath() string       { return gh.path }
 func (gh *GitHubURL) GetToken() string      { return gh.token }
+func (gh *GitHubURL) GetHttpCloneURL() string {
+	return fmt.Sprintf("https://github.com/%s/%s.git", gh.owner, gh.repo)
+}
 
 func (gh *GitHubURL) SetOwnerName(o string)       { gh.owner = o }
 func (gh *GitHubURL) SetRepoName(r string)        { gh.repo = r }
