@@ -6,6 +6,7 @@ import (
 	"os"
 	"strings"
 
+	"github.com/armosec/go-git-url/apis"
 	"github.com/armosec/go-git-url/apis/githubapi"
 	giturl "github.com/whilp/git-urls"
 )
@@ -42,7 +43,7 @@ func IsHostGitHub(host string) bool {
 	return host == githubapi.DEFAULT_HOST || host == githubapi.RAW_HOST
 }
 
-func (gh *GitHubURL) GetProvider() string   { return "github" }
+func (gh *GitHubURL) GetProvider() string   { return apis.ProviderGitHub.String() }
 func (gh *GitHubURL) GetHostName() string   { return gh.host }
 func (gh *GitHubURL) GetBranchName() string { return gh.branch }
 func (gh *GitHubURL) GetOwnerName() string  { return gh.owner }

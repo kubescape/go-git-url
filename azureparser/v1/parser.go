@@ -6,6 +6,7 @@ import (
 	"os"
 	"strings"
 
+	"github.com/armosec/go-git-url/apis"
 	giturl "github.com/whilp/git-urls"
 )
 
@@ -42,7 +43,7 @@ func (az *AzureURL) GetURL() *url.URL {
 
 func IsHostAzure(host string) bool { return strings.HasSuffix(host, HOST) }
 
-func (az *AzureURL) GetProvider() string    { return "azure" }
+func (az *AzureURL) GetProvider() string    { return apis.ProviderAzure.String() }
 func (az *AzureURL) GetHostName() string    { return az.host }
 func (az *AzureURL) GetProjectName() string { return az.project }
 func (az *AzureURL) GetBranchName() string  { return az.branch }
