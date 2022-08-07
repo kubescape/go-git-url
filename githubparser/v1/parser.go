@@ -35,7 +35,7 @@ func NewGitHubParserWithURL(fullURL string) (*GitHubURL, error) {
 func (gh *GitHubURL) GetURL() *url.URL {
 	return &url.URL{
 		Scheme: "https",
-		Host:   gh.host,
+		Host:   gh.GetHostName(),
 		Path:   fmt.Sprintf("%s/%s", gh.GetOwnerName(), gh.GetRepoName()),
 	}
 }
@@ -51,7 +51,7 @@ func (gh *GitHubURL) GetRepoName() string   { return gh.repo }
 func (gh *GitHubURL) GetPath() string       { return gh.path }
 func (gh *GitHubURL) GetToken() string      { return gh.token }
 func (gh *GitHubURL) GetHttpCloneURL() string {
-	return fmt.Sprintf("https://github.com/%s/%s.git", gh.owner, gh.repo)
+	return fmt.Sprintf("https://github.com/%s/%s.git", gh.GetOwnerName(), gh.GetRepoName())
 }
 
 func (gh *GitHubURL) SetOwnerName(o string)       { gh.owner = o }

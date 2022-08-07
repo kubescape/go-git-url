@@ -8,6 +8,7 @@ import (
 	"github.com/armosec/go-git-url/apis/githubapi"
 	azureparserv1 "github.com/armosec/go-git-url/azureparser/v1"
 	githubparserv1 "github.com/armosec/go-git-url/githubparser/v1"
+	gitlabparserv1 "github.com/armosec/go-git-url/gitlabparser/v1"
 )
 
 // NewGitURL get instance of git parser
@@ -22,6 +23,9 @@ func NewGitURL(fullURL string) (IGitURL, error) {
 	}
 	if azureparserv1.IsHostAzure(hostUrl) {
 		return azureparserv1.NewAzureParserWithURL(fullURL)
+	}
+	if gitlabparserv1.IsHostGitLab(hostUrl) {
+		return gitlabparserv1.NewGitLabParserWithURL(fullURL)
 	}
 	return nil, fmt.Errorf("repository host '%s' not supported", hostUrl)
 }

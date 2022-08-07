@@ -52,6 +52,43 @@ func TestNewGitURL(t *testing.T) {
 		assert.Equal(t, "https://dev.azure.com/dwertent/ks-testing-public/_git/ks-testing-public", az.GetURL().String())
 	}
 
+	{ // parse gitlab
+		const gitlabURL = "https://gitlab.com/kubescape/testing"
+		gl, err := NewGitURL(gitlabURL)
+		assert.NoError(t, err)
+		assert.NoError(t, err)
+		assert.Equal(t, "gitlab", gl.GetProvider())
+		assert.Equal(t, "kubescape", gl.GetOwnerName())
+		assert.Equal(t, "testing", gl.GetRepoName())
+		assert.Equal(t, "", gl.GetBranchName())
+		assert.Equal(t, "", gl.GetPath())
+		assert.Equal(t, gitlabURL, gl.GetURL().String())
+	}
+	{ // parse gitlab
+		const gitlabURL = "git@gitlab.com:kubescape/testing.git"
+		gl, err := NewGitURL(gitlabURL)
+		assert.NoError(t, err)
+		assert.NoError(t, err)
+		assert.Equal(t, "gitlab", gl.GetProvider())
+		assert.Equal(t, "kubescape", gl.GetOwnerName())
+		assert.Equal(t, "testing", gl.GetRepoName())
+		assert.Equal(t, "", gl.GetBranchName())
+		assert.Equal(t, "", gl.GetPath())
+		assert.Equal(t, "https://gitlab.com/kubescape/testing", gl.GetURL().String())
+	}
+	{ // parse gitlab
+		const gitlabURL = "https://gitlab.com/kubescape/testing/-/tree/dev"
+		gl, err := NewGitURL(gitlabURL)
+		assert.NoError(t, err)
+		assert.NoError(t, err)
+		assert.Equal(t, "gitlab", gl.GetProvider())
+		assert.Equal(t, "kubescape", gl.GetOwnerName())
+		assert.Equal(t, "testing", gl.GetRepoName())
+		assert.Equal(t, "dev", gl.GetBranchName())
+		assert.Equal(t, "", gl.GetPath())
+		assert.Equal(t, "https://gitlab.com/kubescape/testing", gl.GetURL().String())
+	}
+
 }
 func TestNewGitAPI(t *testing.T) {
 	fileText := "https://raw.githubusercontent.com/armosec/go-git-url/master/files/file0.text"
