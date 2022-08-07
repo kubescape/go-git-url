@@ -4,8 +4,13 @@ The `git-parser` is a package meant for parsing git urls
 
 This package also enables listing all files based on there extension
 
-> The package currently supports only `github` parser and API. Feel free to contribute any other
 ## Parser
+
+### Supported parsers
+
+* GitHub
+* GitLab
+* Azure
 
 ### Parse a git URL
 
@@ -33,6 +38,10 @@ func main() {
 ```
  
 ## Git API support
+
+### Supported APIs
+
+* GitHub
 
 > It is recommended to use a [github token](https://docs.github.com/en/enterprise-server@3.4/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token). Set the github token in the `GITHUB_TOKEN` env
 
