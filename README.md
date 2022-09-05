@@ -20,19 +20,19 @@ package main
 import (
 	"fmt"
 
-	giturl "github.com/armosec/go-git-url"
+	giturl "github.com/kubescape/go-git-url"
 )
 
 func main() {
 
-	fullURl := "https://github.com/armosec/go-git-url"
+    fullURl := "https://github.com/kubescape/go-git-url"
 	gitURL, err := giturl.NewGitURL(fullURl) // initialize and parse the URL
 	if err != nil {
 		// do something
 	}
 
 	fmt.Printf(gitURL.GetHostName())  // github.com
-	fmt.Printf(gitURL.GetOwnerName()) // armosec
+	fmt.Printf(gitURL.GetOwnerName()) // kubescape
 	fmt.Printf(gitURL.GetRepoName())  // go-git-url
 }
 ```
@@ -66,13 +66,13 @@ files, err := gitURL.ListFilesNamesWithExtension(extensions)
 Different URL support ->
 ```go
  
-basicURL, err := giturl.NewGitURL("https://github.com/armosec/go-git-url") 
+basicURL, err := giturl.NewGitURL("https://github.com/kubescape/go-git-url") 
  
-nestedURL, err := giturl.NewGitURL("https://github.com/armosec/go-git-url/tree/master/files")  
+nestedURL, err := giturl.NewGitURL("https://github.com/kubescape/go-git-url/tree/master/files")  
 
-fileApiURL, err := giturl.NewGitURL("https://github.com/armosec/go-git-url/blob/master/files/file0.json")  
+fileApiURL, err := giturl.NewGitURL("https://github.com/kubescape/go-git-url/blob/master/files/file0.json")  
 
-fileRawURL, err := giturl.NewGitURL("https://raw.githubusercontent.com/armosec/go-git-url/master/files/file0.json") 
+fileRawURL, err := giturl.NewGitURL("https://raw.githubusercontent.com/kubescape/go-git-url/master/files/file0.json") 
 
 ```
 ### Download files

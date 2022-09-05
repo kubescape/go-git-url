@@ -8,24 +8,24 @@ import (
 
 func TestNewGitURL(t *testing.T) {
 	{ // parse github
-		const githubURL = "https://github.com/armosec/go-git-url"
+		const githubURL = "https://github.com/kubescape/go-git-url"
 		gh, err := NewGitURL(githubURL)
 		assert.NoError(t, err)
 		assert.Equal(t, "github", gh.GetProvider())
-		assert.Equal(t, "armosec", gh.GetOwnerName())
+		assert.Equal(t, "kubescape", gh.GetOwnerName())
 		assert.Equal(t, "go-git-url", gh.GetRepoName())
 		assert.Equal(t, "", gh.GetBranchName())
 		assert.Equal(t, githubURL, gh.GetURL().String())
 	}
 	{ // parse github
-		const githubURL = "git@github.com:armosec/go-git-url.git"
+		const githubURL = "git@github.com:kubescape/go-git-url.git"
 		gh, err := NewGitURL(githubURL)
 		assert.NoError(t, err)
 		assert.Equal(t, "github", gh.GetProvider())
-		assert.Equal(t, "armosec", gh.GetOwnerName())
+		assert.Equal(t, "kubescape", gh.GetOwnerName())
 		assert.Equal(t, "go-git-url", gh.GetRepoName())
 		assert.Equal(t, "", gh.GetBranchName())
-		assert.Equal(t, "https://github.com/armosec/go-git-url", gh.GetURL().String())
+		assert.Equal(t, "https://github.com/kubescape/go-git-url", gh.GetURL().String())
 	}
 	{ // parse azure
 		const azureURL = "https://dev.azure.com/dwertent/ks-testing-public/_git/ks-testing-public"
@@ -91,11 +91,11 @@ func TestNewGitURL(t *testing.T) {
 
 }
 func TestNewGitAPI(t *testing.T) {
-	fileText := "https://raw.githubusercontent.com/armosec/go-git-url/master/files/file0.text"
+	fileText := "https://raw.githubusercontent.com/kubescape/go-git-url/master/files/file0.text"
 	var gitURL IGitAPI
 	var err error
 	{
-		gitURL, err = NewGitAPI("https://github.com/armosec/go-git-url")
+		gitURL, err = NewGitAPI("https://github.com/kubescape/go-git-url")
 		assert.NoError(t, err)
 
 		files, err := gitURL.ListFilesNamesWithExtension([]string{"yaml", "json"})
@@ -104,7 +104,7 @@ func TestNewGitAPI(t *testing.T) {
 	}
 
 	{
-		gitURL, err = NewGitAPI("https://github.com/armosec/go-git-url")
+		gitURL, err = NewGitAPI("https://github.com/kubescape/go-git-url")
 		assert.NoError(t, err)
 
 		files, errM := gitURL.DownloadFilesWithExtension([]string{"text"})
@@ -135,7 +135,7 @@ func TestNewGitAPI(t *testing.T) {
 	}
 
 	{
-		gitURL, err := NewGitAPI("https://github.com/armosec/go-git-url/tree/master/files")
+		gitURL, err := NewGitAPI("https://github.com/kubescape/go-git-url/tree/master/files")
 		assert.NoError(t, err)
 
 		files, errM := gitURL.DownloadFilesWithExtension([]string{"text"})
@@ -146,7 +146,7 @@ func TestNewGitAPI(t *testing.T) {
 	}
 
 	{
-		gitURL, err = NewGitAPI("https://github.com/armosec/go-git-url/blob/master/files/file0.text")
+		gitURL, err = NewGitAPI("https://github.com/kubescape/go-git-url/blob/master/files/file0.text")
 		assert.NoError(t, err)
 
 		files, errM := gitURL.DownloadFilesWithExtension([]string{"text"})

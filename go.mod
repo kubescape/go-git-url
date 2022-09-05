@@ -1,6 +1,6 @@
-module github.com/armosec/go-git-url
+module github.com/kubescape/go-git-url
 
-go 1.17
+go 1.18
 
 require (
 	github.com/stretchr/testify v1.3.0

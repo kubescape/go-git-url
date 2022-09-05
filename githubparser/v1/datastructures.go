@@ -1,6 +1,6 @@
 package v1
 
-import "github.com/armosec/go-git-url/apis/githubapi"
+import "github.com/kubescape/go-git-url/apis/githubapi"
 
 type GitHubURL struct {
 	host   string // default is github

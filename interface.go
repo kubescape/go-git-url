@@ -3,7 +3,7 @@ package giturl
 import (
 	"net/url"
 
-	"github.com/armosec/go-git-url/apis"
+	"github.com/kubescape/go-git-url/apis"
 )
 
 // IGitURL parse git urls

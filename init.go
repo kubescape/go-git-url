@@ -5,10 +5,10 @@ import (
 
 	giturl "github.com/whilp/git-urls"
 
-	"github.com/armosec/go-git-url/apis/githubapi"
-	azureparserv1 "github.com/armosec/go-git-url/azureparser/v1"
-	githubparserv1 "github.com/armosec/go-git-url/githubparser/v1"
-	gitlabparserv1 "github.com/armosec/go-git-url/gitlabparser/v1"
+	"github.com/kubescape/go-git-url/apis/githubapi"
+	azureparserv1 "github.com/kubescape/go-git-url/azureparser/v1"
+	githubparserv1 "github.com/kubescape/go-git-url/githubparser/v1"
+	gitlabparserv1 "github.com/kubescape/go-git-url/gitlabparser/v1"
 )
 
 // NewGitURL get instance of git parser

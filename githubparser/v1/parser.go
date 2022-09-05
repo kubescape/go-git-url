@@ -6,8 +6,8 @@ import (
 	"os"
 	"strings"
 
-	"github.com/armosec/go-git-url/apis"
-	"github.com/armosec/go-git-url/apis/githubapi"
+	"github.com/kubescape/go-git-url/apis"
+	"github.com/kubescape/go-git-url/apis/githubapi"
 	giturl "github.com/whilp/git-urls"
 )
 

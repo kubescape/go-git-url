@@ -6,7 +6,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/armosec/go-git-url/apis"
+	"github.com/kubescape/go-git-url/apis"
 	giturl "github.com/whilp/git-urls"
 )
 

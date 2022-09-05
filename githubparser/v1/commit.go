@@ -3,8 +3,8 @@ package v1
 import (
 	"fmt"
 
-	"github.com/armosec/go-git-url/apis"
-	"github.com/armosec/go-git-url/apis/githubapi"
+	"github.com/kubescape/go-git-url/apis"
+	"github.com/kubescape/go-git-url/apis/githubapi"
 )
 
 // ListAll list all directories and files in url tree

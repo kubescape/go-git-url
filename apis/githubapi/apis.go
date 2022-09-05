@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/armosec/go-git-url/apis"
+	"github.com/kubescape/go-git-url/apis"
 )
 
 const (

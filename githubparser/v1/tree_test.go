@@ -4,7 +4,7 @@ import (
 	"os"
 	"testing"
 
-	"github.com/armosec/go-git-url/apis/githubapi"
+	"github.com/kubescape/go-git-url/apis/githubapi"
 	"github.com/stretchr/testify/assert"
 )
 
