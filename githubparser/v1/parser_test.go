@@ -13,6 +13,7 @@ var (
 	urlC = "https://github.com/kubescape/go-git-url/tree/master/files"
 	urlD = "https://raw.githubusercontent.com/kubescape/go-git-url/master/files/file0.json"
 	urlE = "git@github.com:kubescape/go-git-url.git"
+	urlF = "git@github.com:foobar/kubescape/go-git-url.git"
 )
 
 func TestNewGitHubParserWithURL(t *testing.T) {
@@ -66,6 +67,11 @@ func TestNewGitHubParserWithURL(t *testing.T) {
 		assert.Equal(t, urlA, gh.GetURL().String())
 		assert.Equal(t, "", gh.GetBranchName())
 		assert.Equal(t, "", gh.GetPath())
+	}
+	{
+		assert.NotPanics(t, func() {
+			_, _ = NewGitHubParserWithURL(urlF)
+		})
 	}
 }
 
