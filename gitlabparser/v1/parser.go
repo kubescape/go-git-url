@@ -75,24 +75,23 @@ func (gl *GitLabURL) Parse(fullURL string) error {
 		return fmt.Errorf("expecting <user>/<repo> in url path, received: '%s'", parsedURL.Path)
 	}
 	gl.owner = splittedRepo[index]
-	index += 1
+	index++
 	gl.repo = strings.TrimSuffix(splittedRepo[index], ".git")
-	index += 1
+	index++
 
 	// root of repo
 	if len(splittedRepo) < index+1 {
 		return nil
 	}
-	index += 1 // skip "-" symbol in URL
+
+	if splittedRepo[index] == "-" {
+		index++ // skip "-" symbol in URL
+	}
 
 	// is file or dir
 	switch splittedRepo[index] {
-	case "blob":
-		index += 1
-	case "tree":
-		index += 1
-	case "raw":
-		index += 1
+	case "blob", "tree", "raw":
+		index++
 	}
 
 	if len(splittedRepo) < index+1 {
