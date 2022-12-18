@@ -19,6 +19,7 @@ type IGitURL interface {
 	GetPath() string
 	GetRepoName() string
 	GetHttpCloneURL() string
+	GetHostName() string
 
 	// parse url
 	Parse(fullURL string) error
