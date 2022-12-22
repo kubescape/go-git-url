@@ -100,7 +100,7 @@ func TestNewGitAPI(t *testing.T) {
 
 		files, err := gitURL.ListFilesNamesWithExtension([]string{"yaml", "json"})
 		assert.NoError(t, err)
-		assert.Equal(t, 7, len(files))
+		assert.Equal(t, 8, len(files))
 	}
 
 	{
