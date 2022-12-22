@@ -18,8 +18,8 @@ func NewGitLabParser() *GitLabURL {
 
 	return &GitLabURL{
 		gitLabAPI: gitlabapi.NewGitLabAPI(),
-		host:  HOST,
-		token: os.Getenv("GITLAB_TOKEN"),
+		host:      HOST,
+		token:     os.Getenv("GITLAB_TOKEN"),
 	}
 }
 
@@ -92,7 +92,7 @@ func (gl *GitLabURL) Parse(fullURL string) error {
 
 	// is file or dir
 	switch splittedRepo[index] {
-	case "blob", "tree":
+	case "blob", "tree", "raw":
 		index++
 	}
 
