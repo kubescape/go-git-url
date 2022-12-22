@@ -13,6 +13,7 @@ type IGitURL interface {
 	SetPath(string)
 	SetRepoName(string)
 
+	GetHostName() string
 	GetProvider() string
 	GetBranchName() string
 	GetOwnerName() string

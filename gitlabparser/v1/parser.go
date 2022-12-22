@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	"github.com/kubescape/go-git-url/apis"
+	"github.com/kubescape/go-git-url/apis/gitlabapi"
 	giturl "github.com/whilp/git-urls"
 )
 
@@ -16,6 +17,7 @@ const HOST = "gitlab.com"
 func NewGitLabParser() *GitLabURL {
 
 	return &GitLabURL{
+		gitLabAPI: gitlabapi.NewGitLabAPI(),
 		host:  HOST,
 		token: os.Getenv("GITLAB_TOKEN"),
 	}
@@ -90,7 +92,7 @@ func (gl *GitLabURL) Parse(fullURL string) error {
 
 	// is file or dir
 	switch splittedRepo[index] {
-	case "blob", "tree", "raw":
+	case "blob", "tree":
 		index++
 	}
 
@@ -107,4 +109,18 @@ func (gl *GitLabURL) Parse(fullURL string) error {
 	gl.path = strings.Join(splittedRepo[index:], "/")
 
 	return nil
+}
+
+// Set the default brach of the repo
+func (gl *GitLabURL) SetDefaultBranchName() error {
+	branch, err := gl.gitLabAPI.GetDefaultBranchName(gl.GetOwnerName(), gl.GetRepoName(), gl.headers())
+	if err != nil {
+		return err
+	}
+	gl.branch = branch
+	return nil
+}
+
+func (gl *GitLabURL) headers() *gitlabapi.Headers {
+	return &gitlabapi.Headers{Token: gl.GetToken()}
 }
