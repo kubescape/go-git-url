@@ -42,8 +42,13 @@ func main() {
 ### Supported APIs
 
 * GitHub
+> It is recommended to use a [GitHub token](https://docs.github.com/en/enterprise-server@3.4/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token). Set the GitHub token in the `GITHUB_TOKEN` env
 
-> It is recommended to use a [github token](https://docs.github.com/en/enterprise-server@3.4/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token). Set the github token in the `GITHUB_TOKEN` env
+* GitLab
+> It is recommended to use a [GitLab token](https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html#create-a-personal-access-token). Set the GitLab token in the `GITLAB_TOKEN` env
+
+* Azure
+> It is recommended to use a [Azure token](https://learn.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=azure-devops&tabs=Windows#create-a-pat). Set the Azure token in the `AZURE_TOKEN` env
 
 ### List files and directories
 ```go
