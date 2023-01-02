@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	"github.com/kubescape/go-git-url/apis"
+	"github.com/kubescape/go-git-url/apis/azureapi"
 	giturl "github.com/whilp/git-urls"
 )
 
@@ -14,15 +15,17 @@ const HOST = "azure.com"
 const HOST_DEV = "dev.azure.com"
 const HOST_PROD = "prod.azure.com"
 
-// NewGitHubParser empty instance of a github parser
+// NewAzureParser empty instance of a azure parser
 func NewAzureParser() *AzureURL {
 
 	return &AzureURL{
-		token: os.Getenv("AZURE_TOKEN"),
+		azureAPI: azureapi.NewAzureAPI(),
+		host:     HOST,
+		token:    os.Getenv("AZURE_TOKEN"),
 	}
 }
 
-// NewGitHubParserWithURL parsed instance of a github parser
+// NewAzureParserWithURL parsed instance of a azure parser
 func NewAzureParserWithURL(fullURL string) (*AzureURL, error) {
 	az := NewAzureParser()
 
@@ -119,4 +122,20 @@ func (az *AzureURL) parseHostHTTP(parsedURL *url.URL) error {
 	}
 
 	return nil
+}
+
+// Set the default brach of the repo
+func (az *AzureURL) SetDefaultBranchName() error {
+
+	branch, err := az.azureAPI.GetDefaultBranchName(az.GetOwnerName(), az.GetProjectName(), az.GetRepoName(), az.headers())
+
+	if err != nil {
+		return err
+	}
+	az.branch = branch
+	return nil
+}
+
+func (az *AzureURL) headers() *azureapi.Headers {
+	return &azureapi.Headers{Token: az.GetToken()}
 }
