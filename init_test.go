@@ -51,7 +51,28 @@ func TestNewGitURL(t *testing.T) {
 		assert.Equal(t, "", az.GetPath())
 		assert.Equal(t, "https://dev.azure.com/dwertent/ks-testing-public/_git/ks-testing-public", az.GetURL().String())
 	}
-
+	{ // parse bitbucket https
+		az, err := NewGitURL("https://matthyx@bitbucket.org/matthyx/ks-testing-public.git")
+		assert.NoError(t, err)
+		assert.NoError(t, err)
+		assert.Equal(t, "bitbucket", az.GetProvider())
+		assert.Equal(t, "matthyx", az.GetOwnerName())
+		assert.Equal(t, "ks-testing-public", az.GetRepoName())
+		assert.Equal(t, "", az.GetBranchName())
+		assert.Equal(t, "", az.GetPath())
+		assert.Equal(t, "https://bitbucket.org/matthyx/ks-testing-public", az.GetURL().String())
+	}
+	{ // parse bitbucket ssh
+		az, err := NewGitURL("git@bitbucket.org:matthyx/ks-testing-public.git")
+		assert.NoError(t, err)
+		assert.NoError(t, err)
+		assert.Equal(t, "bitbucket", az.GetProvider())
+		assert.Equal(t, "matthyx", az.GetOwnerName())
+		assert.Equal(t, "ks-testing-public", az.GetRepoName())
+		assert.Equal(t, "", az.GetBranchName())
+		assert.Equal(t, "", az.GetPath())
+		assert.Equal(t, "https://bitbucket.org/matthyx/ks-testing-public", az.GetURL().String())
+	}
 	{ // parse gitlab
 		const gitlabURL = "https://gitlab.com/kubescape/testing"
 		gl, err := NewGitURL(gitlabURL)

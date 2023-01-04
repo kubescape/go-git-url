@@ -6,9 +6,11 @@ import (
 	giturl "github.com/whilp/git-urls"
 
 	"github.com/kubescape/go-git-url/apis/azureapi"
+	"github.com/kubescape/go-git-url/apis/bitbucketapi"
 	"github.com/kubescape/go-git-url/apis/githubapi"
 	"github.com/kubescape/go-git-url/apis/gitlabapi"
 	azureparserv1 "github.com/kubescape/go-git-url/azureparser/v1"
+	bitbucketparserv1 "github.com/kubescape/go-git-url/bitbucketparser/v1"
 	githubparserv1 "github.com/kubescape/go-git-url/githubparser/v1"
 	gitlabparserv1 "github.com/kubescape/go-git-url/gitlabparser/v1"
 )
@@ -25,6 +27,9 @@ func NewGitURL(fullURL string) (IGitURL, error) {
 	}
 	if azureparserv1.IsHostAzure(hostUrl) {
 		return azureparserv1.NewAzureParserWithURL(fullURL)
+	}
+	if bitbucketparserv1.IsHostBitBucket(hostUrl) {
+		return bitbucketparserv1.NewBitBucketParserWithURL(fullURL)
 	}
 	if gitlabparserv1.IsHostGitLab(hostUrl) {
 		return gitlabparserv1.NewGitLabParserWithURL(fullURL)
@@ -46,6 +51,8 @@ func NewGitAPI(fullURL string) (IGitAPI, error) {
 		return gitlabparserv1.NewGitLabParserWithURL(fullURL)
 	case azureapi.DEFAULT_HOST, azureapi.DEV_HOST:
 		return azureparserv1.NewAzureParserWithURL(fullURL)
+	case bitbucketapi.DEFAULT_HOST:
+		return bitbucketparserv1.NewBitBucketParserWithURL(fullURL)
 	default:
 		return nil, fmt.Errorf("repository host '%s' not supported", hostUrl)
 	}
