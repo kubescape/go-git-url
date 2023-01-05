@@ -11,9 +11,11 @@ var (
 	urlB = "https://dev.azure.com/dwertent/ks-testing-public/_git/ks-testing-public?path=/rules-tests/alert-rw-hostpath/deployment/expected.json"
 	urlC = "https://dev.azure.com/dwertent/ks-testing-public/_git/ks-testing-public?path=/scripts&version=GBdev&_a=contents"
 	urlD = "https://dev.azure.com/dwertent/ks-testing-public/_git/ks-testing-public?path=/scripts&version=GTv1.0.1&_a=contents"
+	urlE = "https://dev.azure.com/dwertent/ks-testing-public/_git/ks-testing-public?path=%2F&version=GBdev"
+	urlF = "https://dwertent@dev.azure.com/dwertent/ks-testing-public/_git/ks-testing-public"
 )
 
-func TestNewGitHubParserWithURL(t *testing.T) {
+func TestNewAzureParserWithURL(t *testing.T) {
 	{
 		az, err := NewAzureParserWithURL(urlA)
 		assert.NoError(t, err)
@@ -59,5 +61,27 @@ func TestNewGitHubParserWithURL(t *testing.T) {
 		assert.Equal(t, "v1.0.1", az.GetTag())
 		assert.Equal(t, "", az.GetBranchName())
 		assert.Equal(t, "/scripts", az.GetPath())
+	}
+}
+
+
+func TestSetDefaultBranch(t *testing.T) {
+	{
+		az, err := NewAzureParserWithURL(urlA)
+		assert.NoError(t, err)
+		assert.NoError(t, az.SetDefaultBranchName())
+		assert.Equal(t, "master", az.GetBranchName())
+	}
+	{
+		az, err := NewAzureParserWithURL(urlE)
+		assert.NoError(t, err)
+		assert.NoError(t, az.SetDefaultBranchName())
+		assert.Equal(t, "master", az.GetBranchName())
+	}
+	{
+		az, err := NewAzureParserWithURL(urlF)
+		assert.NoError(t, err)
+		assert.NoError(t, az.SetDefaultBranchName())
+		assert.Equal(t, "master", az.GetBranchName())
 	}
 }

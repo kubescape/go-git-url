@@ -60,7 +60,7 @@ func (az *AzureAPI) GetDefaultBranchName(owner, project, repo string, headers *H
 		}
 	}
 
-	errAPI := errors.New("unable to find default branch from the GitLab API")
+	errAPI := errors.New("unable to find default branch from the Azure API")
 	return "", errAPI
 }
 
