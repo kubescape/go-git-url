@@ -5,14 +5,15 @@ import "errors"
 type ProviderType string
 
 const (
-	ProviderGitHub ProviderType = "github"
-	ProviderAzure  ProviderType = "azure"
-	ProviderGitLab ProviderType = "gitlab"
+	ProviderGitHub    ProviderType = "github"
+	ProviderAzure     ProviderType = "azure"
+	ProviderBitBucket ProviderType = "bitbucket"
+	ProviderGitLab    ProviderType = "gitlab"
 )
 
 func (pt ProviderType) IsSupported() error {
 	switch pt {
-	case ProviderGitHub, ProviderAzure, ProviderGitLab:
+	case ProviderGitHub, ProviderAzure, ProviderBitBucket, ProviderGitLab:
 		return nil
 	}
 	return errors.New("unsupported provider")
