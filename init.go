@@ -49,7 +49,7 @@ func NewGitAPI(fullURL string) (IGitAPI, error) {
 		return githubparserv1.NewGitHubParserWithURL(fullURL)
 	case gitlabapi.DEFAULT_HOST:
 		return gitlabparserv1.NewGitLabParserWithURL(fullURL)
-	case azureapi.DEFAULT_HOST, azureapi.DEV_HOST:
+	case azureapi.DEFAULT_HOST, azureapi.DEV_HOST, azureapi.SSH_DEV_HOST:
 		return azureparserv1.NewAzureParserWithURL(fullURL)
 	case bitbucketapi.DEFAULT_HOST:
 		return bitbucketparserv1.NewBitBucketParserWithURL(fullURL)
