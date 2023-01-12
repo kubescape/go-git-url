@@ -12,6 +12,7 @@ import (
 const (
 	DEFAULT_HOST string = "azure.com"
 	DEV_HOST     string = "dev.azure.com"
+	SSH_DEV_HOST string = "ssh.dev.azure.com"
 )
 
 type IAzureAPI interface {

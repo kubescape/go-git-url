@@ -13,6 +13,10 @@ var (
 	urlD = "https://dev.azure.com/dwertent/ks-testing-public/_git/ks-testing-public?path=/scripts&version=GTv1.0.1&_a=contents"
 	urlE = "https://dev.azure.com/dwertent/ks-testing-public/_git/ks-testing-public?path=%2F&version=GBdev"
 	urlF = "https://dwertent@dev.azure.com/dwertent/ks-testing-public/_git/ks-testing-public"
+	// scp-like syntax supported by git for ssh
+	// see: https://mirrors.edge.kernel.org/pub/software/scm/git/docs/git-clone.html#URLS
+	// regular form
+	urlG = "git@ssh.dev.azure.com:v3/dwertent/ks-testing-public/ks-testing-public"
 )
 
 func TestNewAzureParserWithURL(t *testing.T) {
@@ -62,8 +66,42 @@ func TestNewAzureParserWithURL(t *testing.T) {
 		assert.Equal(t, "", az.GetBranchName())
 		assert.Equal(t, "/scripts", az.GetPath())
 	}
+	{
+		az, err := NewAzureParserWithURL(urlE)
+		assert.NoError(t, err)
+		assert.Equal(t, "dev.azure.com", az.GetHostName())
+		assert.Equal(t, "azure", az.GetProvider())
+		assert.Equal(t, "dwertent", az.GetOwnerName())
+		assert.Equal(t, "ks-testing-public", az.GetRepoName())
+		assert.Equal(t, urlA, az.GetURL().String())
+		assert.Equal(t, "", az.GetTag())
+		assert.Equal(t, "dev", az.GetBranchName())
+		assert.Equal(t, "/", az.GetPath())
+	}
+	{
+		az, err := NewAzureParserWithURL(urlF)
+		assert.NoError(t, err)
+		assert.Equal(t, "dev.azure.com", az.GetHostName())
+		assert.Equal(t, "azure", az.GetProvider())
+		assert.Equal(t, "dwertent", az.GetOwnerName())
+		assert.Equal(t, "ks-testing-public", az.GetRepoName())
+		assert.Equal(t, urlA, az.GetURL().String())
+		assert.Equal(t, "", az.GetBranchName())
+		assert.Equal(t, "", az.GetPath())
+	}
+	{
+		az, err := NewAzureParserWithURL(urlG)
+		assert.NoError(t, err)
+		assert.NoError(t, err)
+		assert.Equal(t, "dev.azure.com", az.GetHostName())
+		assert.Equal(t, "azure", az.GetProvider())
+		assert.Equal(t, "dwertent", az.GetOwnerName())
+		assert.Equal(t, "ks-testing-public", az.GetRepoName())
+		assert.Equal(t, urlA, az.GetURL().String())
+		assert.Equal(t, "", az.GetBranchName())
+		assert.Equal(t, "", az.GetPath())
+	}
 }
-
 
 func TestSetDefaultBranch(t *testing.T) {
 	{

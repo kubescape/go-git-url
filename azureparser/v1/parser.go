@@ -56,7 +56,7 @@ func (az *AzureURL) GetRepoName() string    { return az.repo }
 func (az *AzureURL) GetPath() string        { return az.path }
 func (az *AzureURL) GetToken() string       { return az.token }
 func (az *AzureURL) GetHttpCloneURL() string {
-	return fmt.Sprintf("https://%s@%s/%s/%s/_git/%s", az.GetOwnerName(), az.GetHostName(), az.GetOwnerName(), az.GetProjectName(), az.GetRepoName())
+	return fmt.Sprintf("https://%s/%s/%s/_git/%s", az.GetHostName(), az.GetOwnerName(), az.GetProjectName(), az.GetRepoName())
 }
 
 func (az *AzureURL) SetOwnerName(o string)         { az.owner = o }
