@@ -17,8 +17,9 @@ var (
 	// see: https://mirrors.edge.kernel.org/pub/software/scm/git/docs/git-clone.html#URLS
 	// regular form
 	urlG = "git@gitlab.com:owner/repo.git"
-	// unexpected form: should not panic
-	urlH = "git@gitlab.com:path/to/repo.git"
+	// project and subproject
+	urlH = "https://gitlab.com/matthyx1/subgroup1/project1.git"
+	urlI = "https://gitlab.com/matthyx1/subgroup1/subsubgroup1/project1.git"
 )
 
 func TestNewGitHubParserWithURL(t *testing.T) {
@@ -104,10 +105,21 @@ func TestNewGitHubParserWithURL(t *testing.T) {
 		assert.NoError(t, err)
 		assert.Equal(t, "gitlab.com", gl.GetHostName())
 		assert.Equal(t, "gitlab", gl.GetProvider())
-		assert.Equal(t, "path", gl.GetOwnerName())
-		assert.Equal(t, "to", gl.GetRepoName())
-		assert.Equal(t, "https://gitlab.com/path/to", gl.GetURL().String())
-		assert.Equal(t, "repo.git", gl.GetBranchName()) // invalid input leads to incorrect guess. At least this does not panic.
+		assert.Equal(t, "matthyx1/subgroup1", gl.GetOwnerName())
+		assert.Equal(t, "project1", gl.GetRepoName())
+		assert.Equal(t, "https://gitlab.com/matthyx1/subgroup1/project1", gl.GetURL().String())
+		assert.Equal(t, "", gl.GetBranchName()) // invalid input leads to incorrect guess. At least this does not panic.
+		assert.Equal(t, "", gl.GetPath())
+	}
+	{
+		gl, err := NewGitLabParserWithURL(urlI)
+		assert.NoError(t, err)
+		assert.Equal(t, "gitlab.com", gl.GetHostName())
+		assert.Equal(t, "gitlab", gl.GetProvider())
+		assert.Equal(t, "matthyx1/subgroup1/subsubgroup1", gl.GetOwnerName())
+		assert.Equal(t, "project1", gl.GetRepoName())
+		assert.Equal(t, "https://gitlab.com/matthyx1/subgroup1/subsubgroup1/project1", gl.GetURL().String())
+		assert.Equal(t, "", gl.GetBranchName()) // invalid input leads to incorrect guess. At least this does not panic.
 		assert.Equal(t, "", gl.GetPath())
 	}
 }
