@@ -45,7 +45,7 @@ func NewGitAPI(fullURL string) (IGitAPI, error) {
 	}
 
 	switch hostUrl {
-	case githubapi.DEFAULT_HOST, githubapi.RAW_HOST:
+	case githubapi.DEFAULT_HOST, githubapi.RAW_HOST, githubapi.SUBDOMAIN_HOST:
 		return githubparserv1.NewGitHubParserWithURL(fullURL)
 	case gitlabapi.DEFAULT_HOST:
 		return gitlabparserv1.NewGitLabParserWithURL(fullURL)

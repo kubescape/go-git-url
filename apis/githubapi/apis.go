@@ -9,8 +9,9 @@ import (
 )
 
 const (
-	DEFAULT_HOST string = "github.com"
-	RAW_HOST     string = "raw.githubusercontent.com"
+	DEFAULT_HOST   string = "github.com"
+	RAW_HOST       string = "raw.githubusercontent.com"
+	SUBDOMAIN_HOST string = "www.github.com"
 )
 
 type IGitHubAPI interface {
