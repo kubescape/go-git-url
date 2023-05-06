@@ -40,7 +40,7 @@ func (gh *GitHubURL) GetURL() *url.URL {
 	}
 }
 func IsHostGitHub(host string) bool {
-	return host == githubapi.DEFAULT_HOST || host == githubapi.RAW_HOST
+	return host == githubapi.DEFAULT_HOST || host == githubapi.RAW_HOST || host == githubapi.SUBDOMAIN_HOST
 }
 
 func (gh *GitHubURL) GetProvider() string   { return apis.ProviderGitHub.String() }

@@ -18,6 +18,16 @@ func TestNewGitURL(t *testing.T) {
 		assert.Equal(t, githubURL, gh.GetURL().String())
 	}
 	{ // parse github
+		const githubURL = "https://www.github.com/kubescape/go-git-url"
+		gh, err := NewGitURL(githubURL)
+		assert.NoError(t, err)
+		assert.Equal(t, "github", gh.GetProvider())
+		assert.Equal(t, "kubescape", gh.GetOwnerName())
+		assert.Equal(t, "go-git-url", gh.GetRepoName())
+		assert.Equal(t, "", gh.GetBranchName())
+		assert.Equal(t, "https://github.com/kubescape/go-git-url", gh.GetURL().String())
+	}
+	{ // parse github
 		const githubURL = "git@github.com:kubescape/go-git-url.git"
 		gh, err := NewGitURL(githubURL)
 		assert.NoError(t, err)
