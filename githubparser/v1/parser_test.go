@@ -14,6 +14,7 @@ var (
 	urlD = "https://raw.githubusercontent.com/kubescape/go-git-url/master/files/file0.json"
 	urlE = "git@github.com:kubescape/go-git-url.git"
 	urlF = "git@github.com:foobar/kubescape/go-git-url.git"
+	urlG = "https://www.github.com/kubescape/go-git-url"
 )
 
 func TestNewGitHubParserWithURL(t *testing.T) {
@@ -73,6 +74,16 @@ func TestNewGitHubParserWithURL(t *testing.T) {
 			_, _ = NewGitHubParserWithURL(urlF)
 		})
 	}
+	{
+		gh, err := NewGitHubParserWithURL(urlG)
+		assert.NoError(t, err)
+		assert.Equal(t, "github.com", gh.GetHostName())
+		assert.Equal(t, "kubescape", gh.GetOwnerName())
+		assert.Equal(t, "go-git-url", gh.GetRepoName())
+		assert.Equal(t, urlA, gh.GetURL().String())
+		assert.Equal(t, "", gh.GetBranchName())
+		assert.Equal(t, "", gh.GetPath())
+	}
 }
 
 func TestSetDefaultBranch(t *testing.T) {
@@ -90,6 +101,12 @@ func TestSetDefaultBranch(t *testing.T) {
 	}
 	{
 		gh, err := NewGitHubParserWithURL(urlE)
+		assert.NoError(t, err)
+		assert.NoError(t, gh.SetDefaultBranchName())
+		assert.Equal(t, "master", gh.GetBranchName())
+	}
+	{
+		gh, err := NewGitHubParserWithURL(urlG)
 		assert.NoError(t, err)
 		assert.NoError(t, gh.SetDefaultBranchName())
 		assert.Equal(t, "master", gh.GetBranchName())
