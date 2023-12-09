@@ -3,7 +3,7 @@ package giturl
 import (
 	"fmt"
 
-	giturl "github.com/whilp/git-urls"
+	giturl "github.com/chainguard-dev/git-urls"
 
 	"github.com/kubescape/go-git-url/apis/azureapi"
 	"github.com/kubescape/go-git-url/apis/bitbucketapi"
