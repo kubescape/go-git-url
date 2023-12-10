@@ -6,9 +6,9 @@ import (
 	"os"
 	"strings"
 
+	giturl "github.com/chainguard-dev/git-urls"
 	"github.com/kubescape/go-git-url/apis"
 	"github.com/kubescape/go-git-url/apis/gitlabapi"
-	giturl "github.com/whilp/git-urls"
 )
 
 const HOST = "gitlab.com"

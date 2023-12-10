@@ -6,9 +6,9 @@ import (
 	"os"
 	"strings"
 
+	giturl "github.com/chainguard-dev/git-urls"
 	"github.com/kubescape/go-git-url/apis"
 	"github.com/kubescape/go-git-url/apis/githubapi"
-	giturl "github.com/whilp/git-urls"
 )
 
 // NewGitHubParser empty instance of a github parser
