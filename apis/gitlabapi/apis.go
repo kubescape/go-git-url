@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"strings"
 
 	"github.com/kubescape/go-git-url/apis"
 )
@@ -25,8 +26,12 @@ type GitLabAPI struct {
 
 func NewGitLabAPI() *GitLabAPI { return &GitLabAPI{httpClient: &http.Client{}} }
 
+func getProjectId(owner, repo string) string {
+	return strings.ReplaceAll(owner+"/"+repo, "/", "%2F")
+}
+
 func (gl *GitLabAPI) GetRepoTree(owner, repo, branch string, headers *Headers) (*Tree, error) {
-	id := owner + "%2F" + repo
+	id := getProjectId(owner, repo)
 
 	treeAPI := APIRepoTree(id, branch)
 	body, err := apis.HttpGet(gl.httpClient, treeAPI, headers.ToMap())
@@ -44,8 +49,8 @@ func (gl *GitLabAPI) GetRepoTree(owner, repo, branch string, headers *Headers) (
 }
 
 func (gl *GitLabAPI) GetDefaultBranchName(owner, repo string, headers *Headers) (string, error) {
+	id := getProjectId(owner, repo)
 
-	id := owner + "%2F" + repo
 	body, err := apis.HttpGet(gl.httpClient, APIMetadata(id), headers.ToMap())
 	if err != nil {
 		return "", err
@@ -67,8 +72,7 @@ func (gl *GitLabAPI) GetDefaultBranchName(owner, repo string, headers *Headers) 
 }
 
 func (gl *GitLabAPI) GetLatestCommit(owner, repo, branch string, headers *Headers) (*Commit, error) {
-
-	id := owner + "%2F" + repo
+	id := getProjectId(owner, repo)
 
 	body, err := apis.HttpGet(gl.httpClient, APILastCommitsOfBranch(id, branch), headers.ToMap())
 	if err != nil {
@@ -93,7 +97,8 @@ func APIRepoTree(id, branch string) string {
 // API Ref: https://docs.gitlab.com/ee/api/repository_files.html#get-raw-file-from-repository
 // Example: https://gitlab.com/api/v4/projects/23383112/repository/files/app%2Findex.html/raw
 func APIRaw(owner, repo, branch, path string) string {
-	id := owner + "%2F" + repo
+	id := getProjectId(owner, repo)
+
 	return fmt.Sprintf("https://%s/api/v4/projects/%s/repository/files/%s/raw", DEFAULT_HOST, id, path)
 }
 
