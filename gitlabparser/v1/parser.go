@@ -11,14 +11,11 @@ import (
 	"github.com/kubescape/go-git-url/apis/gitlabapi"
 )
 
-const HOST = "gitlab.com"
-
 // NewGitHubParser empty instance of a github parser
 func NewGitLabParser() *GitLabURL {
 
 	return &GitLabURL{
 		gitLabAPI: gitlabapi.NewGitLabAPI(),
-		host:      HOST,
 		token:     os.Getenv("GITLAB_TOKEN"),
 	}
 }
@@ -42,7 +39,7 @@ func (gl *GitLabURL) GetURL() *url.URL {
 	}
 }
 
-func IsHostGitLab(host string) bool { return strings.HasSuffix(host, HOST) }
+func IsHostGitLab(host string) bool { return strings.Contains(host, "gitlab") }
 
 func (gl *GitLabURL) GetProvider() string    { return apis.ProviderGitLab.String() }
 func (gl *GitLabURL) GetHostName() string    { return gl.host }
@@ -53,7 +50,7 @@ func (gl *GitLabURL) GetRepoName() string    { return gl.repo }
 func (gl *GitLabURL) GetPath() string        { return gl.path }
 func (gl *GitLabURL) GetToken() string       { return gl.token }
 func (gl *GitLabURL) GetHttpCloneURL() string {
-	return fmt.Sprintf("https://gitlab.com/%s/%s.git", gl.GetOwnerName(), gl.GetRepoName())
+	return fmt.Sprintf("https://%s/%s/%s.git", gl.host, gl.owner, gl.repo)
 }
 
 func (gl *GitLabURL) SetOwnerName(o string)         { gl.owner = o }
@@ -69,6 +66,8 @@ func (gl *GitLabURL) Parse(fullURL string) error {
 	if err != nil {
 		return err
 	}
+
+	gl.host = parsedURL.Host
 
 	index := 0
 
