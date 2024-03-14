@@ -1,126 +1,130 @@
 package giturl
 
 import (
+	"fmt"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
 )
 
 func TestNewGitURL(t *testing.T) {
-	{ // parse github
-		const githubURL = "https://github.com/kubescape/go-git-url"
-		gh, err := NewGitURL(githubURL)
-		assert.NoError(t, err)
-		assert.Equal(t, "github", gh.GetProvider())
-		assert.Equal(t, "kubescape", gh.GetOwnerName())
-		assert.Equal(t, "go-git-url", gh.GetRepoName())
-		assert.Equal(t, "", gh.GetBranchName())
-		assert.Equal(t, githubURL, gh.GetURL().String())
+	tests := []struct {
+		name     string
+		fullURL  string
+		provider string
+		owner    string
+		repo     string
+		branch   string
+		url      string
+		wantErr  assert.ErrorAssertionFunc
+	}{
+		{
+			name:     "parse github",
+			fullURL:  "https://github.com/kubescape/go-git-url",
+			provider: "github",
+			owner:    "kubescape",
+			repo:     "go-git-url",
+			url:      "https://github.com/kubescape/go-git-url",
+			wantErr:  assert.NoError,
+		},
+		{
+			name:     "parse github www",
+			fullURL:  "https://www.github.com/kubescape/go-git-url",
+			provider: "github",
+			owner:    "kubescape",
+			repo:     "go-git-url",
+			url:      "https://github.com/kubescape/go-git-url",
+			wantErr:  assert.NoError,
+		},
+		{
+			name:     "parse github ssh",
+			fullURL:  "git@github.com:kubescape/go-git-url.git",
+			provider: "github",
+			owner:    "kubescape",
+			repo:     "go-git-url",
+			url:      "https://github.com/kubescape/go-git-url",
+			wantErr:  assert.NoError,
+		},
+		{
+			name:     "parse azure",
+			fullURL:  "https://dev.azure.com/dwertent/ks-testing-public/_git/ks-testing-public",
+			provider: "azure",
+			owner:    "dwertent",
+			repo:     "ks-testing-public",
+			url:      "https://dev.azure.com/dwertent/ks-testing-public/_git/ks-testing-public",
+			wantErr:  assert.NoError,
+		},
+		{
+			name:     "parse azure ssh",
+			fullURL:  "git@ssh.dev.azure.com:v3/dwertent/ks-testing-public/ks-testing-public",
+			provider: "azure",
+			owner:    "dwertent",
+			repo:     "ks-testing-public",
+			url:      "https://dev.azure.com/dwertent/ks-testing-public/_git/ks-testing-public",
+			wantErr:  assert.NoError,
+		},
+		{
+			name:     "parse bitbucket https",
+			fullURL:  "https://bitbucket.org/matthyx/ks-testing-public.git",
+			provider: "bitbucket",
+			owner:    "matthyx",
+			repo:     "ks-testing-public",
+			url:      "https://bitbucket.org/matthyx/ks-testing-public",
+			wantErr:  assert.NoError,
+		},
+		{
+			name:     "parse bitbucket ssh",
+			fullURL:  "git@bitbucket.org:matthyx/ks-testing-public.git",
+			provider: "bitbucket",
+			owner:    "matthyx",
+			repo:     "ks-testing-public",
+			url:      "https://bitbucket.org/matthyx/ks-testing-public",
+			wantErr:  assert.NoError,
+		},
+		{
+			name:     "parse gitlab",
+			fullURL:  "https://gitlab.com/kubescape/testing",
+			provider: "gitlab",
+			owner:    "kubescape",
+			repo:     "testing",
+			url:      "https://gitlab.com/kubescape/testing",
+			wantErr:  assert.NoError,
+		},
+		{
+			name:     "parse gitlab ssh",
+			fullURL:  "git@gitlab.com:kubescape/testing.git",
+			provider: "gitlab",
+			owner:    "kubescape",
+			repo:     "testing",
+			url:      "https://gitlab.com/kubescape/testing",
+			wantErr:  assert.NoError,
+		},
+		{
+			name:     "parse gitlab branch",
+			fullURL:  "https://gitlab.com/kubescape/testing/-/tree/dev",
+			provider: "gitlab",
+			owner:    "kubescape",
+			repo:     "testing",
+			branch:   "dev",
+			url:      "https://gitlab.com/kubescape/testing",
+			wantErr:  assert.NoError,
+		},
 	}
-	{ // parse github
-		const githubURL = "https://www.github.com/kubescape/go-git-url"
-		gh, err := NewGitURL(githubURL)
-		assert.NoError(t, err)
-		assert.Equal(t, "github", gh.GetProvider())
-		assert.Equal(t, "kubescape", gh.GetOwnerName())
-		assert.Equal(t, "go-git-url", gh.GetRepoName())
-		assert.Equal(t, "", gh.GetBranchName())
-		assert.Equal(t, "https://github.com/kubescape/go-git-url", gh.GetURL().String())
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			gh, err := NewGitURL(tt.fullURL)
+			if !tt.wantErr(t, err, fmt.Sprintf("NewGitURL(%v)", tt.fullURL)) {
+				return
+			}
+			assert.Equal(t, tt.provider, gh.GetProvider())
+			assert.Equal(t, tt.owner, gh.GetOwnerName())
+			assert.Equal(t, tt.repo, gh.GetRepoName())
+			assert.Equal(t, tt.branch, gh.GetBranchName())
+			assert.Equal(t, tt.url, gh.GetURL().String())
+		})
 	}
-	{ // parse github
-		const githubURL = "git@github.com:kubescape/go-git-url.git"
-		gh, err := NewGitURL(githubURL)
-		assert.NoError(t, err)
-		assert.Equal(t, "github", gh.GetProvider())
-		assert.Equal(t, "kubescape", gh.GetOwnerName())
-		assert.Equal(t, "go-git-url", gh.GetRepoName())
-		assert.Equal(t, "", gh.GetBranchName())
-		assert.Equal(t, "https://github.com/kubescape/go-git-url", gh.GetURL().String())
-	}
-	{ // parse azure
-		const azureURL = "https://dev.azure.com/dwertent/ks-testing-public/_git/ks-testing-public"
-		az, err := NewGitURL(azureURL)
-		assert.NoError(t, err)
-		assert.NoError(t, err)
-		assert.Equal(t, "azure", az.GetProvider())
-		assert.Equal(t, "dwertent", az.GetOwnerName())
-		assert.Equal(t, "ks-testing-public", az.GetRepoName())
-		assert.Equal(t, "", az.GetBranchName())
-		assert.Equal(t, "", az.GetPath())
-		assert.Equal(t, azureURL, az.GetURL().String())
-	}
-	{ // parse azure
-		const azureURL = "git@ssh.dev.azure.com:v3/dwertent/ks-testing-public/ks-testing-public"
-		az, err := NewGitURL(azureURL)
-		assert.NoError(t, err)
-		assert.NoError(t, err)
-		assert.Equal(t, "azure", az.GetProvider())
-		assert.Equal(t, "dwertent", az.GetOwnerName())
-		assert.Equal(t, "ks-testing-public", az.GetRepoName())
-		assert.Equal(t, "", az.GetBranchName())
-		assert.Equal(t, "", az.GetPath())
-		assert.Equal(t, "https://dev.azure.com/dwertent/ks-testing-public/_git/ks-testing-public", az.GetURL().String())
-	}
-	{ // parse bitbucket https
-		az, err := NewGitURL("https://matthyx@bitbucket.org/matthyx/ks-testing-public.git")
-		assert.NoError(t, err)
-		assert.NoError(t, err)
-		assert.Equal(t, "bitbucket", az.GetProvider())
-		assert.Equal(t, "matthyx", az.GetOwnerName())
-		assert.Equal(t, "ks-testing-public", az.GetRepoName())
-		assert.Equal(t, "", az.GetBranchName())
-		assert.Equal(t, "", az.GetPath())
-		assert.Equal(t, "https://bitbucket.org/matthyx/ks-testing-public", az.GetURL().String())
-	}
-	{ // parse bitbucket ssh
-		az, err := NewGitURL("git@bitbucket.org:matthyx/ks-testing-public.git")
-		assert.NoError(t, err)
-		assert.NoError(t, err)
-		assert.Equal(t, "bitbucket", az.GetProvider())
-		assert.Equal(t, "matthyx", az.GetOwnerName())
-		assert.Equal(t, "ks-testing-public", az.GetRepoName())
-		assert.Equal(t, "", az.GetBranchName())
-		assert.Equal(t, "", az.GetPath())
-		assert.Equal(t, "https://bitbucket.org/matthyx/ks-testing-public", az.GetURL().String())
-	}
-	{ // parse gitlab
-		const gitlabURL = "https://gitlab.com/kubescape/testing"
-		gl, err := NewGitURL(gitlabURL)
-		assert.NoError(t, err)
-		assert.NoError(t, err)
-		assert.Equal(t, "gitlab", gl.GetProvider())
-		assert.Equal(t, "kubescape", gl.GetOwnerName())
-		assert.Equal(t, "testing", gl.GetRepoName())
-		assert.Equal(t, "", gl.GetBranchName())
-		assert.Equal(t, "", gl.GetPath())
-		assert.Equal(t, gitlabURL, gl.GetURL().String())
-	}
-	{ // parse gitlab
-		const gitlabURL = "git@gitlab.com:kubescape/testing.git"
-		gl, err := NewGitURL(gitlabURL)
-		assert.NoError(t, err)
-		assert.NoError(t, err)
-		assert.Equal(t, "gitlab", gl.GetProvider())
-		assert.Equal(t, "kubescape", gl.GetOwnerName())
-		assert.Equal(t, "testing", gl.GetRepoName())
-		assert.Equal(t, "", gl.GetBranchName())
-		assert.Equal(t, "", gl.GetPath())
-		assert.Equal(t, "https://gitlab.com/kubescape/testing", gl.GetURL().String())
-	}
-	{ // parse gitlab
-		const gitlabURL = "https://gitlab.com/kubescape/testing/-/tree/dev"
-		gl, err := NewGitURL(gitlabURL)
-		assert.NoError(t, err)
-		assert.NoError(t, err)
-		assert.Equal(t, "gitlab", gl.GetProvider())
-		assert.Equal(t, "kubescape", gl.GetOwnerName())
-		assert.Equal(t, "testing", gl.GetRepoName())
-		assert.Equal(t, "dev", gl.GetBranchName())
-		assert.Equal(t, "", gl.GetPath())
-		assert.Equal(t, "https://gitlab.com/kubescape/testing", gl.GetURL().String())
-	}
-
 }
+
 func TestNewGitAPI(t *testing.T) {
 	fileText := "https://raw.githubusercontent.com/kubescape/go-git-url/master/files/file0.text"
 	var gitURL IGitAPI
@@ -185,5 +189,10 @@ func TestNewGitAPI(t *testing.T) {
 		assert.Equal(t, 1, len(files))
 		assert.Equal(t, "name=file0", string(files[fileText]))
 
+	}
+
+	{
+		gitURL, err = NewGitAPI("https://gitlab.host.com/kubescape/testing")
+		assert.NoError(t, err)
 	}
 }
