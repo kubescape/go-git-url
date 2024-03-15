@@ -28,7 +28,7 @@ func NewGitURL(fullURL string) (IGitURL, error) {
 		return bitbucketparserv1.NewBitBucketParserWithURL(fullURL)
 	}
 	if gitlabparserv1.IsHostGitLab(hostUrl) {
-		return gitlabparserv1.NewGitLabParserWithURL(fullURL)
+		return gitlabparserv1.NewGitLabParserWithURL(hostUrl, fullURL)
 	}
 	return nil, fmt.Errorf("repository host '%s' not supported", hostUrl)
 }
@@ -44,7 +44,7 @@ func NewGitAPI(fullURL string) (IGitAPI, error) {
 		return githubparserv1.NewGitHubParserWithURL(fullURL)
 	}
 	if gitlabparserv1.IsHostGitLab(hostUrl) {
-		return gitlabparserv1.NewGitLabParserWithURL(fullURL)
+		return gitlabparserv1.NewGitLabParserWithURL(hostUrl, fullURL)
 	}
 	if azureparserv1.IsHostAzure(hostUrl) {
 		return azureparserv1.NewAzureParserWithURL(fullURL)

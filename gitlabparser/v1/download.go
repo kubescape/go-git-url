@@ -75,7 +75,7 @@ func streamToByte(stream io.Reader) ([]byte, error) {
 func (gl *GitLabURL) pathsToURLs(files []string) []string {
 	var rawURLs []string
 	for i := range files {
-		rawURLs = append(rawURLs, gitlabapi.APIRaw(gl.GetOwnerName(), gl.GetRepoName(), gl.GetBranchName(), files[i]))
+		rawURLs = append(rawURLs, gitlabapi.APIRaw(gl.host, gl.GetOwnerName(), gl.GetRepoName(), files[i]))
 	}
 	return rawURLs
 }

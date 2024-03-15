@@ -11,21 +11,15 @@ import (
 	"github.com/kubescape/go-git-url/apis/gitlabapi"
 )
 
-// NewGitHubParser empty instance of a github parser
-func NewGitLabParser() *GitLabURL {
-
-	return &GitLabURL{
-		gitLabAPI: gitlabapi.NewGitLabAPI(),
+// NewGitHubParserWithURL parsed instance of a github parser
+func NewGitLabParserWithURL(host, fullURL string) (*GitLabURL, error) {
+	gl := &GitLabURL{
+		gitLabAPI: gitlabapi.NewGitLabAPI(host),
 		token:     os.Getenv("GITLAB_TOKEN"),
 	}
-}
-
-// NewGitHubParserWithURL parsed instance of a github parser
-func NewGitLabParserWithURL(fullURL string) (*GitLabURL, error) {
-	gl := NewGitLabParser()
 
 	if err := gl.Parse(fullURL); err != nil {
-		return gl, err
+		return nil, err
 	}
 
 	return gl, nil
