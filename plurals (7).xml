@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <plurals name="mtrl_badge_content_description">
+        <item>%d nowe powiadomienie</item>
+        <item>%d nowe powiadomienia</item>
+        <item>%d nowych powiadomień</item>
+        <item>%d nowego powiadomienia</item>
+    </plurals>
+</resources>
