@@ -22,13 +22,24 @@ type IAzureAPI interface {
 }
 
 type AzureAPI struct {
+	host       string
 	httpClient *http.Client
 }
 
-func NewAzureAPI() *AzureAPI { return &AzureAPI{httpClient: &http.Client{}} }
+func NewAzureAPI(host ...string) *AzureAPI {
+	apiHost := DEV_HOST
+	if len(host) > 0 && host[0] != "" {
+		apiHost = host[0]
+	}
+
+	return &AzureAPI{
+		host:       apiHost,
+		httpClient: &http.Client{},
+	}
+}
 
 func (az *AzureAPI) GetRepoTree(owner, project, repo, branch string, headers *Headers) (*Tree, error) {
-	treeAPI := APIRepoTree(owner, project, repo, branch)
+	treeAPI := apiRepoTree(az.apiHost(), owner, project, repo, branch)
 	body, err := apis.HttpGet(az.httpClient, treeAPI, headers.ToMap())
 	if err != nil {
 		return nil, err
@@ -45,7 +56,7 @@ func (az *AzureAPI) GetRepoTree(owner, project, repo, branch string, headers *He
 
 func (az *AzureAPI) GetDefaultBranchName(owner, project, repo string, headers *Headers) (string, error) {
 
-	body, err := apis.HttpGet(az.httpClient, APIMetadata(owner, project, repo), headers.ToMap())
+	body, err := apis.HttpGet(az.httpClient, apiMetadata(az.apiHost(), owner, project, repo), headers.ToMap())
 	if err != nil {
 		return "", err
 	}
@@ -67,7 +78,7 @@ func (az *AzureAPI) GetDefaultBranchName(owner, project, repo string, headers *H
 
 func (az *AzureAPI) GetLatestCommit(owner, project, repo, branch string, headers *Headers) (*Commit, error) {
 
-	body, err := apis.HttpGet(az.httpClient, APILastCommitsOfBranch(owner, project, repo, branch), headers.ToMap())
+	body, err := apis.HttpGet(az.httpClient, apiLastCommitsOfBranch(az.apiHost(), owner, project, repo, branch), headers.ToMap())
 	if err != nil {
 		return nil, err
 	}
@@ -83,7 +94,7 @@ func (az *AzureAPI) GetLatestCommit(owner, project, repo, branch string, headers
 // Get latest commit data of path/file
 func (az *AzureAPI) GetFileLatestCommit(owner, project, repo, branch, fullPath string, headers *Headers) ([]Commit, error) {
 
-	body, err := apis.HttpGet(az.httpClient, APILastCommitsOfPath(owner, project, repo, branch, fullPath), headers.ToMap())
+	body, err := apis.HttpGet(az.httpClient, apiLastCommitsOfPath(az.apiHost(), owner, project, repo, branch, fullPath), headers.ToMap())
 	if err != nil {
 		return nil, err
 	}
@@ -100,7 +111,7 @@ func (az *AzureAPI) GetFileLatestCommit(owner, project, repo, branch, fullPath s
 // API Ref: https://learn.microsoft.com/en-us/rest/api/azure/devops/git/items/list?view=azure-devops-rest-7.0&tabs=HTTP#full-recursion-and-with-content-metadata
 // Example: https://dev.azure.com/anubhav06/testing/_apis/git/repositories/testing/items?recursionLevel=Full&versionDescriptor.version=dev&api-version=5.1
 func APIRepoTree(owner, project, repo, branch string) string {
-	return fmt.Sprintf("https://dev.%s/%s/%s/_apis/git/repositories/%s/items?recursionLevel=Full&versionDescriptor.version=%s&api-version=5.1", DEFAULT_HOST, owner, project, repo, branch)
+	return apiRepoTree(DEV_HOST, owner, project, repo, branch)
 }
 
 // APIRaw Azure raw file api
@@ -108,33 +119,64 @@ func APIRepoTree(owner, project, repo, branch string) string {
 // https://stackoverflow.com/questions/56281152/how-to-get-a-link-to-a-file-from-a-vso-repo/56283730#56283730
 // Example: https://dev.azure.com/anubhav06/k8s-example/_apis/sourceProviders/tfsgit/filecontents?&repository=k8s-example&commitOrBranch=master&path=/volumes/cephfs/cephfs.yaml&api-version=7.0
 func APIRaw(owner, project, repo, branch, path string) string {
-	return fmt.Sprintf("https://dev.%s/%s/%s/_apis/sourceProviders/tfsgit/filecontents?&repository=%s&commitOrBranch=%s&path=%s", DEFAULT_HOST, owner, project, repo, branch, path)
+	return apiRaw(DEV_HOST, owner, project, repo, branch, path)
 }
 
 // APIDefaultBranch Azure repo metadata api
 // API Ref: https://learn.microsoft.com/en-us/rest/api/azure/devops/git/stats/list?view=azure-devops-rest-4.1&tabs=HTTP
 // Example: https://dev.azure.com/anubhav06/k8s-example/_apis/git/repositories/k8s-example/stats/branches?api-version=4.1
 func APIMetadata(owner, project, repo string) string {
-	return fmt.Sprintf("https://dev.%s/%s/%s/_apis/git/repositories/%s/stats/branches?api-version=4.1", DEFAULT_HOST, owner, project, repo)
+	return apiMetadata(DEV_HOST, owner, project, repo)
 }
 
 // APILastCommits Azure last commit api
 // API Ref: https://learn.microsoft.com/en-us/rest/api/azure/devops/git/commits/get-commits?view=azure-devops-rest-4.1&tabs=HTTP
 // Example: https://dev.azure.com/anubhav06/k8s-example/_apis/git/repositories/k8s-example/commits?searchCriteria.$top=1&api-version=4.1
 func APILastCommits(owner, project, repo string) string {
-	return fmt.Sprintf("https://dev.%s/%s/%s/_apis/git/repositories/%s/commits?searchCriteria.$top=1", DEFAULT_HOST, owner, project, repo)
+	return apiLastCommits(DEV_HOST, owner, project, repo)
 }
 
 // APILastCommitsOfBranch Azure last commit of specific branch api
 // API Ref: https://learn.microsoft.com/en-us/rest/api/azure/devops/git/commits/get-commits?view=azure-devops-rest-4.1&tabs=HTTP
 // Example: https://dev.azure.com/anubhav06/testing/_apis/git/repositories/testing/commits?searchCriteria.$top=1&searchCriteria.itemVersion.version=dev
 func APILastCommitsOfBranch(owner, project, repo, branch string) string {
-	return fmt.Sprintf("%s&searchCriteria.itemVersion.version=%s", APILastCommits(owner, project, repo), branch)
+	return apiLastCommitsOfBranch(DEV_HOST, owner, project, repo, branch)
 }
 
 // APILastCommitsOfPath Azure last commit of specific branch api
 // API Ref: https://learn.microsoft.com/en-us/rest/api/azure/devops/git/commits/get-commits?view=azure-devops-rest-4.1&tabs=HTTP
 // Example: https://dev.azure.com/anubhav06/k8s-example/_apis/git/repositories/k8s-example/commits?searchCriteria.$top=1&searchCriteria.itemVersion.version=master&searchCriteria.itemPath=volumes/storageos/storageos-pod.yaml
 func APILastCommitsOfPath(owner, project, repo, branch, path string) string {
-	return fmt.Sprintf("%s&searchCriteria.itemPath=%s", APILastCommitsOfBranch(owner, project, repo, branch), path)
+	return apiLastCommitsOfPath(DEV_HOST, owner, project, repo, branch, path)
+}
+
+func (az *AzureAPI) apiHost() string {
+	if az.host == "" {
+		return DEV_HOST
+	}
+	return az.host
+}
+
+func apiRepoTree(host, owner, project, repo, branch string) string {
+	return fmt.Sprintf("https://%s/%s/%s/_apis/git/repositories/%s/items?recursionLevel=Full&versionDescriptor.version=%s&api-version=5.1", host, owner, project, repo, branch)
+}
+
+func apiRaw(host, owner, project, repo, branch, path string) string {
+	return fmt.Sprintf("https://%s/%s/%s/_apis/sourceProviders/tfsgit/filecontents?&repository=%s&commitOrBranch=%s&path=%s", host, owner, project, repo, branch, path)
+}
+
+func apiMetadata(host, owner, project, repo string) string {
+	return fmt.Sprintf("https://%s/%s/%s/_apis/git/repositories/%s/stats/branches?api-version=4.1", host, owner, project, repo)
+}
+
+func apiLastCommits(host, owner, project, repo string) string {
+	return fmt.Sprintf("https://%s/%s/%s/_apis/git/repositories/%s/commits?searchCriteria.$top=1", host, owner, project, repo)
+}
+
+func apiLastCommitsOfBranch(host, owner, project, repo, branch string) string {
+	return fmt.Sprintf("%s&searchCriteria.itemVersion.version=%s", apiLastCommits(host, owner, project, repo), branch)
+}
+
+func apiLastCommitsOfPath(host, owner, project, repo, branch, path string) string {
+	return fmt.Sprintf("%s&searchCriteria.itemPath=%s", apiLastCommitsOfBranch(host, owner, project, repo, branch), path)
 }

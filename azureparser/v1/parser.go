@@ -73,10 +73,15 @@ func (az *AzureURL) Parse(fullURL string) error {
 	if err != nil {
 		return err
 	}
-	az.host = parsedURL.Host
+	az.host = apis.HostWithPort(parsedURL)
 
-	if strings.HasPrefix(az.host, "ssh") {
+	if strings.HasPrefix(az.host, "ssh.") {
 		az.host = strings.TrimPrefix(az.host, "ssh.")
+	}
+
+	az.azureAPI = azureapi.NewAzureAPI(az.host)
+
+	if strings.HasPrefix(parsedURL.Hostname(), "ssh.") {
 		return az.parseHostSSH(parsedURL)
 	}
 	return az.parseHostHTTP(parsedURL)
