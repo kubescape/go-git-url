@@ -61,5 +61,5 @@ func getHost(fullURL string) (string, error) {
 		return "", err
 	}
 
-	return parsedURL.Host, nil
+	return parsedURL.Hostname(), nil
 }

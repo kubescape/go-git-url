@@ -14,13 +14,16 @@ import (
 // NewGitHubParserWithURL parsed instance of a github parser
 func NewGitLabParserWithURL(host, fullURL string) (*GitLabURL, error) {
 	gl := &GitLabURL{
-		gitLabAPI: gitlabapi.NewGitLabAPI(host),
-		token:     os.Getenv("GITLAB_TOKEN"),
+		token: os.Getenv("GITLAB_TOKEN"),
 	}
 
 	if err := gl.Parse(fullURL); err != nil {
 		return nil, err
 	}
+
+	// Use the parsed host (which preserves non-default ports for
+	// self-hosted instances) so API calls target the correct endpoint.
+	gl.gitLabAPI = gitlabapi.NewGitLabAPI(gl.host)
 
 	return gl, nil
 }
@@ -63,7 +66,7 @@ func (gl *GitLabURL) Parse(fullURL string) error {
 		return err
 	}
 
-	gl.host = parsedURL.Host
+	gl.host = apis.HostWithPort(parsedURL)
 
 	index := 0
 
