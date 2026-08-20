@@ -55,6 +55,9 @@ func (gl *BitBucketAPI) GetLatestCommit(owner, repo, branch string, headers *Hea
 	if err != nil {
 		return nil, err
 	}
+	if len(data.Values) == 0 {
+		return nil, fmt.Errorf("no commits found for branch '%s' in repository '%s/%s'", branch, owner, repo)
+	}
 	return &data.Values[0], nil
 }
 

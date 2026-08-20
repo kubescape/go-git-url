@@ -84,7 +84,10 @@ func (gl *GitLabAPI) GetLatestCommit(owner, repo, branch string, headers *Header
 	var data []Commit
 	err = json.Unmarshal([]byte(body), &data)
 	if err != nil {
-		return &data[0], err
+		return nil, err
+	}
+	if len(data) == 0 {
+		return nil, fmt.Errorf("no commits found for branch '%s' in project '%s'", branch, id)
 	}
 	return &data[0], nil
 }
