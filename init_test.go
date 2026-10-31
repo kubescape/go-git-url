@@ -257,6 +257,24 @@ func TestNewGitURL(t *testing.T) {
 			url:      "https://git.host.com/repo",
 			wantErr:  assert.NoError,
 		},
+		{
+			name:     "parse gitlab with a trailing separator and nothing after it",
+			fullURL:  "https://gitlab.com/kubescape/testing/-",
+			provider: "gitlab",
+			owner:    "kubescape",
+			repo:     "testing",
+			url:      "https://gitlab.com/kubescape/testing",
+			wantErr:  assert.NoError,
+		},
+		{
+			name:     "parse bitbucket with a trailing separator and nothing after it",
+			fullURL:  "https://bitbucket.org/matthyx/ks-testing-public/-",
+			provider: "bitbucket",
+			owner:    "matthyx",
+			repo:     "ks-testing-public",
+			url:      "https://bitbucket.org/matthyx/ks-testing-public",
+			wantErr:  assert.NoError,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
