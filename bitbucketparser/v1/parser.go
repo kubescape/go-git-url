@@ -90,6 +90,10 @@ func (gl *BitBucketURL) Parse(fullURL string) error {
 		index++ // skip "-" symbol in URL
 	}
 
+	if len(splitRepo) < index+1 {
+		return nil
+	}
+
 	// is file or dir
 	switch splitRepo[index] {
 	case "src", "raw":

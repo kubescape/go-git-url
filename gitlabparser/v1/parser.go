@@ -96,6 +96,10 @@ func (gl *GitLabURL) Parse(fullURL string) error {
 		index++ // skip "-" symbol in URL
 	}
 
+	if len(splittedRepo) < index+1 {
+		return nil
+	}
+
 	// is file or dir
 	switch splittedRepo[index] {
 	case "blob", "tree", "raw":
