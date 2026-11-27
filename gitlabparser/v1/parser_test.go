@@ -10,6 +10,7 @@ import (
 func TestNewGitHubParserWithURL(t *testing.T) {
 	tests := []struct {
 		name    string
+		host    string
 		url     string
 		want    *GitLabURL
 		wantErr assert.ErrorAssertionFunc
@@ -115,32 +116,48 @@ func TestNewGitHubParserWithURL(t *testing.T) {
 		},
 		{
 			name: "self-hosted",
+			host: "gitlab.host.com",
 			url:  "https://gitlab.host.com/kubescape/testing",
 			want: &GitLabURL{
-				host:  "gitlab.host.com",
-				owner: "kubescape",
-				repo:  "testing",
+				configuredHost: "gitlab.host.com",
+				host:           "gitlab.host.com",
+				owner:          "kubescape",
+				repo:           "testing",
 			},
 			wantErr: assert.NoError,
 		},
 		{
 			name: "repo only",
+			host: "git.host.com",
 			url:  "https://git.host.com/repo.git",
 			want: &GitLabURL{
-				host:  "git.host.com",
-				owner: "",
-				repo:  "repo",
+				configuredHost: "git.host.com",
+				host:           "git.host.com",
+				owner:          "",
+				repo:           "repo",
+			},
+			wantErr: assert.NoError,
+		},
+		{
+			name: "repo only with default port",
+			host: "git.host.com",
+			url:  "https://git.host.com:443/repo.git",
+			want: &GitLabURL{
+				configuredHost: "git.host.com",
+				host:           "git.host.com",
+				owner:          "",
+				repo:           "repo",
 			},
 			wantErr: assert.NoError,
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got, err := NewGitLabParserWithURL("", tt.url)
-			got.gitLabAPI = nil
+			got, err := NewGitLabParserWithURL(tt.host, tt.url)
 			if !tt.wantErr(t, err, fmt.Sprintf("NewGitLabParserWithURL(%v)", tt.url)) {
 				return
 			}
+			got.gitLabAPI = nil
 			assert.Equalf(t, tt.want, got, "NewGitLabParserWithURL(%v)", tt.url)
 		})
 	}
@@ -157,7 +174,7 @@ func TestIsHostGitLab(t *testing.T) {
 		},
 		{
 			name: "gitlab.host.com",
-			want: true,
+			want: false,
 		},
 		{
 			name: "github.com",

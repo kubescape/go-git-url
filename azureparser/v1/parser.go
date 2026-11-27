@@ -44,7 +44,13 @@ func (az *AzureURL) GetURL() *url.URL {
 	}
 }
 
-func IsHostAzure(host string) bool { return strings.HasSuffix(host, HOST) }
+func IsHostAzure(host string) bool {
+	switch strings.ToLower(host) {
+	case HOST, HOST_DEV, HOST_PROD, azureapi.SSH_DEV_HOST:
+		return true
+	}
+	return false
+}
 
 func (az *AzureURL) GetProvider() string    { return apis.ProviderAzure.String() }
 func (az *AzureURL) GetHostName() string    { return az.host }
@@ -73,18 +79,22 @@ func (az *AzureURL) Parse(fullURL string) error {
 	if err != nil {
 		return err
 	}
-	az.host = apis.HostWithPort(parsedURL)
-
-	if strings.HasPrefix(az.host, "ssh.") {
-		az.host = strings.TrimPrefix(az.host, "ssh.")
+	if !IsHostAzure(parsedURL.Hostname()) {
+		return fmt.Errorf("repository host '%s' not supported", parsedURL.Hostname())
 	}
-
-	az.azureAPI = azureapi.NewAzureAPI(az.host)
-
-	if strings.HasPrefix(parsedURL.Hostname(), "ssh.") {
-		return az.parseHostSSH(parsedURL)
+	host := strings.ToLower(apis.HostWithPort(parsedURL))
+	if strings.EqualFold(parsedURL.Hostname(), azureapi.SSH_DEV_HOST) {
+		host = strings.TrimPrefix(host, "ssh.")
+		err = az.parseHostSSH(parsedURL)
+	} else {
+		err = az.parseHostHTTP(parsedURL)
 	}
-	return az.parseHostHTTP(parsedURL)
+	if err != nil {
+		return err
+	}
+	az.host = host
+	az.azureAPI = azureapi.NewAzureAPI(host)
+	return nil
 }
 
 func (az *AzureURL) parseHostSSH(parsedURL *url.URL) error {

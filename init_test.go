@@ -240,24 +240,6 @@ func TestNewGitURL(t *testing.T) {
 			wantErr:  assert.NoError,
 		},
 		{
-			name:     "repo only",
-			fullURL:  "https://git.host.com/repo.git",
-			provider: "gitlab",
-			owner:    "",
-			repo:     "repo",
-			url:      "https://git.host.com/repo",
-			wantErr:  assert.NoError,
-		},
-		{
-			name:     "repo only with port",
-			fullURL:  "https://git.host.com:443/repo.git",
-			provider: "gitlab",
-			owner:    "",
-			repo:     "repo",
-			url:      "https://git.host.com/repo",
-			wantErr:  assert.NoError,
-		},
-		{
 			name:     "parse gitlab with a trailing separator and nothing after it",
 			fullURL:  "https://gitlab.com/kubescape/testing/-",
 			provider: "gitlab",
@@ -291,8 +273,8 @@ func TestNewGitURL(t *testing.T) {
 	}
 }
 
-func TestNewGitURL_GitLabSelfHostedCustomPort(t *testing.T) {
-	gitURL, err := NewGitURL("https://gitlab.host.com:8443/kubescape/testing")
+func TestNewGitLabParserWithURL_SelfHostedCustomPort(t *testing.T) {
+	gitURL, err := gitlabparserv1.NewGitLabParserWithURL("gitlab.host.com:8443", "https://gitlab.host.com:8443/kubescape/testing")
 	if !assert.NoError(t, err) {
 		return
 	}
@@ -306,7 +288,7 @@ func TestNewGitURL_GitLabSelfHostedCustomPort(t *testing.T) {
 }
 
 func TestNewGitLabParserWithURL_IPv6HostPreservesBrackets(t *testing.T) {
-	gitURL, err := gitlabparserv1.NewGitLabParserWithURL("", "https://[2001:db8::1]/kubescape/testing")
+	gitURL, err := gitlabparserv1.NewGitLabParserWithURL("[2001:db8::1]", "https://[2001:db8::1]/kubescape/testing")
 	if !assert.NoError(t, err) {
 		return
 	}
@@ -383,8 +365,8 @@ func TestNewGitAPI(t *testing.T) {
 	}
 
 	{
-		gitURL, err = NewGitAPI("https://gitlab.host.com/kubescape/testing")
-		assert.NoError(t, err)
+		_, err = NewGitAPI("https://gitlab.host.com/kubescape/testing")
+		assert.Error(t, err)
 	}
 }
 
@@ -427,4 +409,50 @@ type roundTripFunc func(*http.Request) (*http.Response, error)
 
 func (f roundTripFunc) RoundTrip(r *http.Request) (*http.Response, error) {
 	return f(r)
+}
+
+func TestUnsupportedProviderHosts(t *testing.T) {
+	for _, host := range []string{"git.kernel.org", "containsgitlab.example", "notazure.com", "other.azure.com"} {
+		t.Run(host, func(t *testing.T) {
+			url := "https://" + host + "/org/project/_git/repo"
+			want := fmt.Sprintf("repository host '%s' not supported", host)
+			_, err := NewGitURL(url)
+			assert.EqualError(t, err, want)
+			_, err = NewGitAPI(url)
+			assert.EqualError(t, err, want)
+		})
+	}
+}
+
+func TestAzureKnownHosts(t *testing.T) {
+	for _, remote := range []string{
+		"https://azure.com/org/project/_git/repo",
+		"https://DEV.Azure.com/org/project/_git/repo",
+		"https://prod.azure.com/org/project/_git/repo",
+		"ssh://git@SSH.dev.azure.com/v3/org/project/repo",
+	} {
+		repo, err := NewGitURL(remote)
+		if assert.NoError(t, err, remote) {
+			assert.Equal(t, "azure", repo.GetProvider())
+			assert.Equal(t, "repo", repo.GetRepoName())
+		}
+	}
+}
+
+func TestReparseUnsupportedHost(t *testing.T) {
+	for _, url := range []string{"https://gitlab.com/org/repo", "https://dev.azure.com/org/project/_git/repo"} {
+		repo, err := NewGitAPI(url)
+		if !assert.NoError(t, err) {
+			continue
+		}
+		assert.Error(t, repo.Parse("https://unknown.example/other/project/_git/other"))
+		assert.Equal(t, url, repo.GetURL().String())
+	}
+}
+
+func TestGitLabConfiguredHostMismatch(t *testing.T) {
+	for _, remote := range []string{"https://other.example.org:8443/org/repo", "https://code.example.org:9443/org/repo"} {
+		_, err := gitlabparserv1.NewGitLabParserWithURL("code.example.org:8443", remote)
+		assert.Error(t, err, remote)
+	}
 }

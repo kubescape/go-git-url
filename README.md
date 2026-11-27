@@ -37,6 +37,18 @@ func main() {
 }
 ```
  
+### Self-hosted GitLab
+
+For a self-hosted instance, pass its configured hostname and any non-default port
+to the GitLab parser. Use the same parser for URL parsing and API operations.
+
+```go
+import gitlab "github.com/kubescape/go-git-url/gitlabparser/v1"
+
+// Inside your function:
+repo, err := gitlab.NewGitLabParserWithURL("code.example.org:8443", fullURL)
+```
+
 ## Git API support
 
 ### Supported APIs

@@ -11,19 +11,17 @@ import (
 	"github.com/kubescape/go-git-url/apis/gitlabapi"
 )
 
-// NewGitHubParserWithURL parsed instance of a github parser
+// NewGitLabParserWithURL parses a repository on the configured host (including any
+// non-default port). An empty host selects gitlab.com.
 func NewGitLabParserWithURL(host, fullURL string) (*GitLabURL, error) {
 	gl := &GitLabURL{
-		token: os.Getenv("GITLAB_TOKEN"),
+		configuredHost: host,
+		token:          os.Getenv("GITLAB_TOKEN"),
 	}
 
 	if err := gl.Parse(fullURL); err != nil {
 		return nil, err
 	}
-
-	// Use the parsed host (which preserves non-default ports for
-	// self-hosted instances) so API calls target the correct endpoint.
-	gl.gitLabAPI = gitlabapi.NewGitLabAPI(gl.host)
 
 	return gl, nil
 }
@@ -37,7 +35,7 @@ func (gl *GitLabURL) GetURL() *url.URL {
 }
 
 func IsHostGitLab(host string) bool {
-	return strings.Contains(host, "gitlab") || strings.HasPrefix(host, "git.")
+	return strings.EqualFold(host, "gitlab.com")
 }
 
 func (gl *GitLabURL) GetProvider() string    { return apis.ProviderGitLab.String() }
@@ -66,7 +64,14 @@ func (gl *GitLabURL) Parse(fullURL string) error {
 		return err
 	}
 
-	gl.host = apis.HostWithPort(parsedURL)
+	host := apis.HostWithPort(parsedURL)
+	allowed := IsHostGitLab(parsedURL.Hostname())
+	if gl.configuredHost != "" {
+		allowed = strings.EqualFold(host, gl.configuredHost)
+	}
+	if !allowed {
+		return fmt.Errorf("repository host '%s' not supported", host)
+	}
 
 	index := 0
 
@@ -74,6 +79,12 @@ func (gl *GitLabURL) Parse(fullURL string) error {
 	if len(splittedRepo) < 1 {
 		return fmt.Errorf("expecting <user>/<repo> or <repo> in url path, received: '%s'", parsedURL.Path)
 	}
+
+	if gl.configuredHost != "" {
+		host = gl.configuredHost
+	}
+	gl.host = host
+	gl.gitLabAPI = gitlabapi.NewGitLabAPI(host)
 
 	// in gitlab <user>/<repo> are separated from blob/tree/raw with a -
 	for i := range splittedRepo {
